@@ -123,6 +123,19 @@ export default class EventComponent extends Component {
         }
     }
 
+
+    addPomeloEvent(eventName: string, func: (data: any) => void, isQueue?: boolean) {
+        //网络消息事件注册
+        if (this._service) {
+            if (eventName != null && eventName != "") {
+                this._service.addPomeloEvent(eventName, func as any, isQueue as boolean, this);
+            } else {
+                error(this.logTag, `注册的网络回调有误 class : ${js.getClassName(this)} netEventName:${eventName}`);
+            }
+        }
+    }
+
+
     /**
      * @description 删除注册网络事件
      * @param manCmd 主cmd

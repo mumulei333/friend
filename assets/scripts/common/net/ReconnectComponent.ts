@@ -5,6 +5,7 @@ import Controller from "../../framework/controller/Controller";
 import { Config } from "../config/Config";
 import { LogicEvent, LogicEventData, LogicType } from "../event/LogicEvent";
 import { CommonService } from "./CommonService";
+import { ICommonService } from "./ICommonService";
 
 /**
  * @description 断线重连模态框 
@@ -14,7 +15,7 @@ import { CommonService } from "./CommonService";
 const { ccclass, property } = _decorator;
 
 @ccclass
-export default class ReconnectComponent extends Controller<CommonService> {
+export default class ReconnectComponent extends Controller<ICommonService> {
 
     /**@description 当前连接次数 */
     private _connectCount = 0;
@@ -99,7 +100,7 @@ export default class ReconnectComponent extends Controller<CommonService> {
         log(`${this.logName} ${this.service.serviceName} 断开`)
         Manager.alert.show({
             tag: Config.RECONNECT_ALERT_TAG,
-            isRepeat:false,
+            isRepeat: false,
             text: Manager.getLanguage(["warningReconnect", this.service.serviceName]),
             confirmCb: (isOK) => {
                 if (isOK) {

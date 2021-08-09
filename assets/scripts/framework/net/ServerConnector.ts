@@ -116,7 +116,7 @@ export class ServerConnector {
      * @param port 
      * @param protocol 协议类型 ws / wss 
      */
-    public connect(ip: string, port: number | string | null = null, protocol: WebSocketType = "wss") {
+    public connect_server(ip: string, port: number | string | null = null, protocol: WebSocketType = "wss") {
         if (!this.enabled) {
             if (DEBUG) warn(`请求先启用`)
             return;
@@ -137,7 +137,7 @@ export class ServerConnector {
     /**
      * @description 清除定时发送心跳的定时器id
      */
-    private stopSendHartSchedule() {
+    protected stopSendHartSchedule() {
         if (this._sendHartId != -1) {
             clearInterval(this._sendHartId);
             this._sendHartId = -1;
@@ -147,7 +147,7 @@ export class ServerConnector {
     /**
      * @description 启动心跳发送
      */
-    private startSendHartSchedule() {
+    protected startSendHartSchedule() {
         let self = this;
         this._sendHartId = setInterval(() => {
             self._curRecvHartTimeOutCount = self._curRecvHartTimeOutCount + 1;
