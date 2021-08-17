@@ -29,7 +29,7 @@ export default class EventComponent extends cc.Component {
 
     private _getEventArgs(): EventArgs {
         if (arguments.length < 2) {
-            if ( CC_DEBUG ) cc.error(`注册事件参数错误`);
+            if (CC_DEBUG) cc.error(`注册事件参数错误`);
             return null;
         }
 
@@ -95,13 +95,13 @@ export default class EventComponent extends cc.Component {
      */
     addEvent(eventName: string, func: (data: any) => void);
     addEvent() {
-        let event : EventArgs = this._getEventArgs.apply(this, arguments);
+        let event: EventArgs = this._getEventArgs.apply(this, arguments);
         if (event) {
             this._events.push(event);
 
-            if ( event.name ){
-                Manager.eventDispatcher.addEventListener(event.name,event.func,this);
-            }else{
+            if (event.name) {
+                Manager.eventDispatcher.addEventListener(event.name, event.func, this);
+            } else {
                 //网络消息事件注册
                 if (this._service) {
                     if (event.mainCmd && event.subCmd) {
@@ -121,6 +121,19 @@ export default class EventComponent extends cc.Component {
         }
     }
 
+
+    addPomeloEvent(eventName: string, func: (data: any) => void, isQueue?: boolean) {
+        //网络消息事件注册
+        if (this._service) {
+            if (eventName != null && eventName != "") {
+                this._service.addPomeloEvent(eventName, func as any, isQueue as boolean, this);
+            } else {
+                cc.error(this.logTag, `注册的网络回调有误 class : ${cc.js.getClassName(this)} netEventName:${eventName}`);
+            }
+        }
+    }
+
+
     /**
      * @description 删除注册网络事件
      * @param manCmd 主cmd
@@ -134,7 +147,7 @@ export default class EventComponent extends cc.Component {
     removeEvent(eventName: string);
     removeEvent() {
         if (arguments.length < 1) {
-            if ( CC_DEBUG ) cc.error(`参数有误`);
+            if (CC_DEBUG) cc.error(`参数有误`);
             return;
         }
         if (arguments.length == 1) {
@@ -166,7 +179,7 @@ export default class EventComponent extends cc.Component {
     }
 
     protected bindingEvents() {
-        
+
     }
 
     onLoad() {

@@ -5,12 +5,13 @@
 
 import { Logic } from "../common/base/Logic";
 import { LogicType, LogicEvent, LogicEventData } from "../common/event/LogicEvent";
-import { ViewZOrder } from "../common/config/Config";
+import { GameLayer, ViewZOrder } from "../common/config/Config";
 import LoginView from "./view/LoginView";
 import { BUNDLE_RESOURCES } from "../framework/base/Defines";
 import { HotUpdate, AssetManagerCode, AssetManagerState } from "../common/base/HotUpdate";
 import DownloadLoading from "../common/component/DownloadLoading";
 import { i18n } from "../common/language/CommonLanguage";
+import { PinusGameService } from "../common/net/PinusGameServer";
 
 class LoginLogic extends Logic {
 
@@ -41,7 +42,7 @@ class LoginLogic extends Logic {
                 Manager.alert.show({
                     text: i18n.newVersion, confirmCb: (isOK) => {
                         if (isOK) {
-                            Manager.uiManager.open({ type: DownloadLoading, zIndex: ViewZOrder.UI, args: [state,i18n.hallText] });
+                            Manager.uiManager.open({ type: DownloadLoading, zIndex: ViewZOrder.UI, layerIndex: GameLayer.Content, args: [state, i18n.hallText] });
                         } else {
                             //退出游戏
                             cc.game.end();
@@ -75,9 +76,11 @@ class LoginLogic extends Logic {
 
     public onEnterComplete(data: LogicEventData) {
         super.onEnterComplete(data);
-        if( data.type == this.logicType ){
+        if (data.type == this.logicType) {
+            // Manager.serviceManager.onLoad()
+            PinusGameService.instance.connect()
             //进入到登录，关闭掉所有网络连接，请求登录成功后才连接网络
-            Manager.serviceManager.close();
+            // Manager.serviceManager.close();
         }
     }
 

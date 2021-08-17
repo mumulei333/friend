@@ -9,16 +9,16 @@ export namespace Config {
 
     /**@description 公共Prefabs预置路径 */
     export let CommonPrefabs = {
-        tips : "common/prefabs/Tips",
-        uiLoading : "common/prefabs/UILoading",
-        loading : "common/prefabs/Loading",
-        alert : "common/prefabs/Alert",
+        tips: "common/prefabs/Tips",
+        uiLoading: "common/prefabs/UILoading",
+        loading: "common/prefabs/Loading",
+        alert: "common/prefabs/Alert",
     }
 
     /**@description 公共音效路径 */
     export const audioPath = {
-        dialog : "common/audio/dlg_open",
-        button : "common/audio/btn_click",
+        dialog: "common/audio/dlg_open",
+        button: "common/audio/btn_click",
     }
 
     /**@description 是否跳过热更新检测 */
@@ -56,6 +56,9 @@ export namespace Config {
 
     /**@description 网络重连弹出框tag */
     export const RECONNECT_ALERT_TAG = 100;
+
+    /**@description 是否启用layout布局分层*/
+    export const EnableLayerManager = true;
 }
 
 /**
@@ -86,3 +89,18 @@ export namespace ViewZOrder {
     /**@description 界面加载动画层，暂时放到最高层，加载动画时，界面未打开完成时，不让玩家点击其它地方 */
     export const UILoading = 700;
 }
+
+
+export enum GameLayer {
+    //内容层
+    Content = 0,
+    Mask,
+    Tips,
+    Alert,
+    Loading,
+    UILoading
+}
+
+export const GameLayerNames: string[] = [
+    "LayerContent", "Mask", "Tips", "Alert", "Loading", "UILoading"
+]

@@ -1,5 +1,5 @@
 import { EventApi } from "../../framework/event/EventApi";
-import { ViewZOrder, Config } from "../config/Config";
+import { ViewZOrder, Config, GameLayer } from "../config/Config";
 import { BUNDLE_RESOURCES, ResourceCacheData } from "../../framework/base/Defines";
 /**
  * @description 加载动画
@@ -17,7 +17,7 @@ export default class UILoading {
         Manager.resolutionHelper.fullScreenAdapt(this._node);
     }
     private _isWaitingHide = false;
-    private delay : number = null;
+    private delay: number = null;
     private content: cc.Node = null;
     private text: cc.Label = null;
     private _isLoadingPrefab = false;
@@ -31,16 +31,16 @@ export default class UILoading {
     * @description 显示全屏幕加载动画
     * @param delay 延迟显示时间 当为null时，不会显示loading进度，但会显示阻隔层 >0时为延迟显示的时间
     */
-    public show( delay : number ,name : string) {
-        if( delay == undefined || delay == null || delay < 0 ){
+    public show(delay: number, name: string) {
+        if (delay == undefined || delay == null || delay < 0) {
             this.delay = Config.LOAD_VIEW_DELAY;
-        }else{
+        } else {
             this.delay = delay;
         }
         this._uiName = name;
         this._show();
     }
-    private _timerId = -1;
+    private _timerId: NodeJS.Timeout | number = -1;
 
     /**
      * @description 显示动画
@@ -52,14 +52,14 @@ export default class UILoading {
         let finish = await this.loadPrefab();
         if (finish) {
             this._node.removeFromParent();
-            Manager.uiManager.addChild(this._node,ViewZOrder.UILoading);
+            Manager.uiManager.addChild(this._node, ViewZOrder.UILoading, GameLayer.UILoading);
             this._node.position = cc.Vec3.ZERO;
             this.content = cc.find("content", this._node);
             cc.Tween.stopAllByTarget(this.content);
             this.text = cc.find("text", this.content).getComponent(cc.Label);
             this.text.string = "0%";
             this.content.opacity = 0;
-            if ( this.delay > 0 ){
+            if (this.delay > 0) {
                 cc.tween(this.content).delay(this.delay).set({ opacity: 255 }).start();
             }
             //第一次在预置体没加载好就被隐藏
@@ -88,7 +88,7 @@ export default class UILoading {
     }
     /**@description 停止计时 */
     private stopTimeOutTimer() {
-        clearTimeout(this._timerId);
+        clearTimeout(this._timerId as NodeJS.Timeout);
         this._timerId = -1;
     }
 
@@ -114,29 +114,29 @@ export default class UILoading {
             }
             this._isLoadingPrefab = true;
             Manager.assetManager.load(
-                BUNDLE_RESOURCES, 
+                BUNDLE_RESOURCES,
                 Config.CommonPrefabs.uiLoading,
                 cc.Prefab,
-                (finish: number, total: number, item: cc.AssetManager.RequestItem)=>{},
+                (finish: number, total: number, item: cc.AssetManager.RequestItem) => { },
                 (data: ResourceCacheData) => {
-                this._isLoadingPrefab = false;
-                if (data && data.data && data.data instanceof cc.Prefab) {
-                    Manager.assetManager.addPersistAsset(Config.CommonPrefabs.uiLoading,data.data,BUNDLE_RESOURCES);
-                    this._node = cc.instantiate(data.data);
-                    if (this.finishLoadCb) {
-                        this.finishLoadCb(true);
-                        this.finishLoadCb = null;
+                    this._isLoadingPrefab = false;
+                    if (data && data.data && data.data instanceof cc.Prefab) {
+                        Manager.assetManager.addPersistAsset(Config.CommonPrefabs.uiLoading, data.data, BUNDLE_RESOURCES);
+                        this._node = cc.instantiate(data.data);
+                        if (this.finishLoadCb) {
+                            this.finishLoadCb(true);
+                            this.finishLoadCb = null;
+                        }
+                        resolove(true);
                     }
-                    resolove(true);
-                }
-                else {
-                    if (this.finishLoadCb) {
-                        this.finishLoadCb(false);
-                        this.finishLoadCb = null;
+                    else {
+                        if (this.finishLoadCb) {
+                            this.finishLoadCb(false);
+                            this.finishLoadCb = null;
+                        }
+                        resolove(false);
                     }
-                    resolove(false);
-                }
-            });
+                });
         });
     }
 

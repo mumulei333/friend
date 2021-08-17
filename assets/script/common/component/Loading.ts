@@ -1,5 +1,5 @@
 import { EventApi } from "../../framework/event/EventApi";
-import { ViewZOrder, Config } from "../config/Config";
+import { ViewZOrder, Config, GameLayer } from "../config/Config";
 import { BUNDLE_RESOURCES, ResourceCacheData } from "../../framework/base/Defines";
 /**
  * @description 加载动画
@@ -20,24 +20,24 @@ export default class Loading {
     private _isWaitingHide = false;
     /**@description 是否正在加载预置 */
     private _isLoadingPrefab = false;
-    private _timeOutCb : ()=>void = null;
+    private _timeOutCb: () => void = null;
     /**@description 显示超时回调 */
-    public set timeOutCb(value){
+    public set timeOutCb(value) {
         this._timeOutCb = value;
     }
-    public get timeOutCb(){
+    public get timeOutCb() {
         return this._timeOutCb;
     }
 
     /**@description 显示的Loading提示内容 */
-    private _content : string[] = [];
+    private _content: string[] = [];
     private _showContentIndex = 0;
 
     /**@description 超时回调定时器id */
-    private _timerId:number = -1;
+    private _timerId: number | NodeJS.Timeout = -1;
 
     /**@description 显示的提示 */
-    private _text : cc.Label = null;
+    private _text: cc.Label = null;
 
     public preloadPrefab() {
         this.loadPrefab();
@@ -49,11 +49,11 @@ export default class Loading {
      * @param timeOutCb 超时回调
      * @param timeout 显示超时时间
      */
-    public show( content : string | string[] , timeOutCb?:()=>void,timeout = Config.LOADING_TIME_OUT ) {
+    public show(content: string | string[], timeOutCb?: () => void, timeout = Config.LOADING_TIME_OUT) {
         this._timeOutCb = timeOutCb;
-        if( Array.isArray(content) ){
+        if (Array.isArray(content)) {
             this._content = content;
-        }else{
+        } else {
             this._content = [];
             this._content.push(content);
         }
@@ -61,14 +61,14 @@ export default class Loading {
         return this;
     }
 
-    private async _show( timeout : number ) {
+    private async _show(timeout: number) {
         this._isWaitingHide = false;
         let finish = await this.loadPrefab();
         if (finish) {
             this._node.removeFromParent();
-            Manager.uiManager.addChild(this._node,ViewZOrder.Loading);
+            Manager.uiManager.addChild(this._node, ViewZOrder.Loading, GameLayer.Loading);
             this._node.position = cc.Vec3.ZERO;
-            this._text = cc.find("content/text",this._node).getComponent(cc.Label);
+            this._text = cc.find("content/text", this._node).getComponent(cc.Label);
             this._showContentIndex = 0;
             this.startShowContent();
             //第一次在预置体没加载好就被隐藏
@@ -83,29 +83,29 @@ export default class Loading {
         }
     }
 
-    private startShowContent( ){
-        if( this._content.length == 1 ){
+    private startShowContent() {
+        if (this._content.length == 1) {
             this._text.string = this._content[0];
-        }else{
+        } else {
             cc.Tween.stopAllByTarget(this._text.node);
             cc.tween(this._text.node)
-            .call(()=>{
-                this._text.string = this._content[this._showContentIndex];
-            })
-            .delay(Config.LOADING_CONTENT_CHANGE_INTERVAL)
-            .call(()=>{
-                this._showContentIndex ++;
-                if( this._showContentIndex >= this._content.length ){
-                    this._showContentIndex = 0;
-                }
-                this.startShowContent();
-            })
-            .start();
+                .call(() => {
+                    this._text.string = this._content[this._showContentIndex];
+                })
+                .delay(Config.LOADING_CONTENT_CHANGE_INTERVAL)
+                .call(() => {
+                    this._showContentIndex++;
+                    if (this._showContentIndex >= this._content.length) {
+                        this._showContentIndex = 0;
+                    }
+                    this.startShowContent();
+                })
+                .start();
         }
     }
 
-    private stopShowContent(){
-        if( this._text ){
+    private stopShowContent() {
+        if (this._text) {
             cc.Tween.stopAllByTarget(this._text.node);
         }
     }
@@ -121,9 +121,9 @@ export default class Loading {
         }
     }
     /**@description 停止计时 */
-    private stopTimeOutTimer( ) {
+    private stopTimeOutTimer() {
         this._timeOutCb = null;
-        clearTimeout(this._timerId);
+        clearTimeout(this._timerId as NodeJS.Timeout);
         this._timerId = -1;
     }
 
@@ -144,21 +144,21 @@ export default class Loading {
             }
             this._isLoadingPrefab = true;
             Manager.assetManager.load(
-                BUNDLE_RESOURCES, 
+                BUNDLE_RESOURCES,
                 Config.CommonPrefabs.loading,
                 cc.Prefab,
-                (finish: number, total: number, item: cc.AssetManager.RequestItem)=>{},
+                (finish: number, total: number, item: cc.AssetManager.RequestItem) => { },
                 (data: ResourceCacheData) => {
-                this._isLoadingPrefab = false;
-                if (data && data.data && data.data instanceof cc.Prefab) {
-                    Manager.assetManager.addPersistAsset(Config.CommonPrefabs.loading,data.data,BUNDLE_RESOURCES)
-                    this._node = cc.instantiate(data.data);
-                    resolove(true);
-                }
-                else {
-                    resolove(false);
-                }
-            });
+                    this._isLoadingPrefab = false;
+                    if (data && data.data && data.data instanceof cc.Prefab) {
+                        Manager.assetManager.addPersistAsset(Config.CommonPrefabs.loading, data.data, BUNDLE_RESOURCES)
+                        this._node = cc.instantiate(data.data);
+                        resolove(true);
+                    }
+                    else {
+                        resolove(false);
+                    }
+                });
         });
     }
 

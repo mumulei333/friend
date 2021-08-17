@@ -13,6 +13,7 @@ export type MessageHandleFunc = (handleTypeData: any) => number;
 export interface ProtoListenerData {
     mainCmd: number, // main cmd
     subCmd: number, //sub cmd
+    eventName?: string
     func: MessageHandleFunc, //处理函数
     type: typeof Message, //解包类型
     isQueue: boolean,//是否进入消息队列，如果不是，收到网络消息返回，会立即回调处理函数
@@ -21,23 +22,23 @@ export interface ProtoListenerData {
 }
 
 export class Service extends ServerConnector {
-    private _messageHeader : typeof MessageHeader = MessageHeader;
+    private _messageHeader: typeof MessageHeader = MessageHeader;
     /**@description 数据流消息包头定义类型 */
-    public set messageHeader( value : typeof MessageHeader ){
+    public set messageHeader(value: typeof MessageHeader) {
         this._messageHeader = value;
     }
-    private _Heartbeat : typeof Message = null;
+    private _Heartbeat: typeof Message = null;
     /**@description 心跳的消息定义类型 */
-    public get heartbeat() : typeof Message{
+    public get heartbeat(): typeof Message {
         return this._Heartbeat;
     }
-    public set heartbeat( value : typeof Message ){
+    public set heartbeat(value: typeof Message) {
         this._Heartbeat = value;
     }
 
     public serviceName = "CommonService";
     /**@description 值越大，优先级越高 */
-    public priority : number = 0;
+    public priority: number = 0;
 
     /**
      * @description 发送心跳
@@ -65,15 +66,15 @@ export class Service extends ServerConnector {
     }
     protected onOpen() {
         super.onOpen();
-        dispatch(EventApi.NetEvent.ON_OPEN,{service: this,event : null});
+        dispatch(EventApi.NetEvent.ON_OPEN, { service: this, event: null });
     }
     protected onClose(ev: Event) {
         super.onClose(ev);
-        dispatch(EventApi.NetEvent.ON_CLOSE,{service: this,event : ev});
+        dispatch(EventApi.NetEvent.ON_CLOSE, { service: this, event: ev });
     }
     protected onError(ev: Event) {
         super.onError(ev);
-        dispatch(EventApi.NetEvent.ON_ERROR,{service: this,event : ev});
+        dispatch(EventApi.NetEvent.ON_ERROR, { service: this, event: ev });
     }
     protected onMessage(data: Uint8Array) {
 
@@ -84,7 +85,7 @@ export class Service extends ServerConnector {
             return;
         }
         super.onMessage(data);
-        if ( this.isHeartBeat(header) ){
+        if (this.isHeartBeat(header)) {
             //心跳消息，路过处理，应该不会有人注册心跳吧
             return;
         }
@@ -98,19 +99,32 @@ export class Service extends ServerConnector {
         if (this._listeners[key].length <= 0) {
             return;
         }
+
+        this.addMessageQueue(key, header, true)
+    }
+
+    protected decode(o: ProtoListenerData, header: MessageHeader): Message | null {
+        let obj: Message = null!;
+        if (o.type) {
+            obj = new o.type();
+            //解包
+            obj.decode(header.buffer);
+        } else {
+            //把数据放到里面，让后面使用都自己解析
+            obj = header.buffer as any;
+        }
+        return obj
+    }
+
+    protected addMessageQueue(key: number | string, data: any, encode?: boolean) {
+        if (this._listeners[key].length <= 0) { return }
         let listenerDatas = this._listeners[key];
         let queueDatas = [];
 
         for (let i = 0; i < listenerDatas.length; i++) {
-            //预先存储的解析类型 //同一个命令使用同一类类型
-            let obj: Message = null;
-            if (listenerDatas[i].type) {
-                obj = new listenerDatas[i].type();
-                //解包
-                obj.decode(header.buffer);
-            } else {
-                //把数据放到里面，让后面使用都自己解析
-                obj = header.buffer as any;
+            let obj = data
+            if (encode) {
+                obj = this.decode(listenerDatas[i], data)
             }
 
             if (listenerDatas[i].isQueue) {
@@ -121,29 +135,29 @@ export class Service extends ServerConnector {
                 //不需要进入队列处理
                 try {
                     listenerDatas[i].func && listenerDatas[i].func.call(listenerDatas[i].target, obj);
-                } catch (error) {
-                    cc.error(error);
+                } catch (err) {
+                    cc.error(err);
                 }
 
             }
         }
-
         if (queueDatas.length > 0) {
             this._masseageQueue.push(queueDatas);
         }
     }
 
+
     /** 监听集合*/
-    private _listeners: { [key: string]: ProtoListenerData[] } = {};
+    protected _listeners: { [key: string]: ProtoListenerData[] } = {};
 
     /** 消息处理队列 */
-    private _masseageQueue: Array<ProtoListenerData[]> = new Array<ProtoListenerData[]>();
+    protected _masseageQueue: Array<ProtoListenerData[]> = new Array<ProtoListenerData[]>();
 
     /** 是否正在处理消息 ，消息队列处理消息有时间，如执行一个消息需要多少秒后才执行一下个*/
-    private _isDoingMessage: boolean = false;
+    protected _isDoingMessage: boolean = false;
 
     /** @description 可能后面有其它特殊需要，特定情况下暂停消息队列的处理, true为停止消息队列处理 */
-    private _isPause: boolean = false;
+    protected _isPause: boolean = false;
 
     /**
      * @description 暂停消息队列消息处理
@@ -175,6 +189,7 @@ export class Service extends ServerConnector {
         isQueue: boolean,
         target: any) {
         let key = makeKey(mainCmd, subCmd);
+
         if (this._listeners[key]) {
             let hasSame = false;
             for (let i = 0; i < this._listeners[key].length; i++) {
@@ -203,7 +218,47 @@ export class Service extends ServerConnector {
                 func: handleFunc,
                 type: handleType,
                 isQueue: isQueue,
-                target: target
+            });
+        }
+    }
+
+
+
+
+    public addPomeloEvent(eventName: string, handleFunc: MessageHandleFunc, isQueue: boolean, target: any) {
+        if (eventName == "") { return }
+
+        if (this._listeners[eventName]) {
+            let hasSame = false;
+            for (let i = 0; i < this._listeners[eventName].length; i++) {
+                if (this._listeners[eventName][i].target === target) {
+                    hasSame = true;
+                    break;
+                }
+            }
+            if (hasSame) {
+                return;
+            }
+            this._listeners[eventName].push({
+                mainCmd: -1,
+                subCmd: -1,
+                func: handleFunc,
+                type: null!,
+                isQueue: isQueue,
+                target: target,
+                eventName: eventName
+            });
+        }
+        else {
+            this._listeners[eventName] = [];
+            this._listeners[eventName].push({
+                mainCmd: -1,
+                subCmd: -1,
+                func: handleFunc,
+                type: null!,
+                isQueue: isQueue,
+                target: target,
+                eventName: eventName
             });
         }
     }
@@ -280,8 +335,8 @@ export class Service extends ServerConnector {
      */
     public send(msg: Message) {
         //发送请求数据
-        if( this._messageHeader ){
-            if( msg.encode() ){
+        if (this._messageHeader) {
+            if (msg.encode()) {
                 let header = new this._messageHeader();
                 header.encode(msg);
                 if (this.isHeartBeat(msg)) {
@@ -290,11 +345,11 @@ export class Service extends ServerConnector {
                     cc.log(`send request main cmd : ${msg.mainCmd} , sub cmd : ${msg.subCmd} `);
                 }
                 this.sendBuffer(header.buffer);
-            }else{
+            } else {
                 cc.error(`encode error`);
             }
-           
-        }else{
+
+        } else {
             cc.error("请求指定数据包头处理类型")
         }
     }
@@ -312,7 +367,8 @@ export class Service extends ServerConnector {
             func: input.func,
             isQueue: input.isQueue,
             data: data,
-            target: input.target
+            target: input.target,
+            eventName: input.eventName
         };
     }
 
@@ -371,7 +427,7 @@ export class Service extends ServerConnector {
         this.resumeMessageQueue();
     }
 
-    public close( isEnd : boolean = false) {
+    public close(isEnd: boolean = false) {
 
         //清空消息处理队列
         this._masseageQueue = [];

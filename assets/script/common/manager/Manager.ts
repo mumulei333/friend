@@ -15,6 +15,7 @@ import Alert from "../component/Alert";
 import Loading from "../component/Loading";
 import { ServiceManager } from "./ServiceManager";
 import { CommonLanguage } from "../language/CommonLanguage";
+import { LayerManager } from "../../framework/base/LayerManager";
 
 /**@description 游戏所有运行单例的管理 */
 class _Manager extends Framewok {
@@ -26,6 +27,8 @@ class _Manager extends Framewok {
         }
         return this._netManager;
     }
+
+
 
     private _hallNetManager: NetManager = null;
     /**@description 大厅的网络控制器组件管理器，注册到该管理器的网络组件，除登录界面外，都会被移除掉*/
@@ -41,6 +44,10 @@ class _Manager extends Framewok {
         return getSingleton(ServiceManager);
     }
 
+    get layerManager() {
+        return getSingleton(LayerManager)
+    }
+
     /**@description 逻辑控制器管理器 */
     get logicManager() {
         return getSingleton(LogicManager);
@@ -52,12 +59,12 @@ class _Manager extends Framewok {
     }
 
     /**@description 小提示 */
-    get tips(){
+    get tips() {
         return getSingleton(Tips);
     }
 
     /**@description 界面加载时的全屏Loading,显示加载进度 */
-    get uiLoading():UILoading{
+    get uiLoading(): UILoading {
         return getSingleton(UILoading);
     }
 
@@ -71,12 +78,12 @@ class _Manager extends Framewok {
         return getSingleton(Loading);
     }
 
-    private _wssCacertUrl ="";
+    private _wssCacertUrl = "";
     /**@description websocket wss 证书url地址 */
     set wssCacertUrl(value) {
         this._wssCacertUrl = value;
     }
-    get wssCacertUrl(){
+    get wssCacertUrl() {
         return this._wssCacertUrl;
     }
 
@@ -86,7 +93,7 @@ class _Manager extends Framewok {
         if (this._globalAudio) {
             return this._globalAudio;
         }
-        this._globalAudio = this.uiManager.getCanvas().getComponent(GlobalAudio);
+        this._globalAudio = this.layerManager.getCanvas().getComponent(GlobalAudio);
         return this._globalAudio;
     }
 

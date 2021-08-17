@@ -4,9 +4,9 @@
 
 import { BUNDLE_RESOURCES, ResourceCacheData } from "../../framework/base/Defines";
 import { EventApi } from "../../framework/event/EventApi";
-import { Config, ViewZOrder } from "../config/Config";
+import { Config, GameLayer, ViewZOrder } from "../config/Config";
 import { i18n } from "../language/CommonLanguage";
-import { CommonService } from "./CommonService";
+import { ICommonService } from "./ICommonService";
 import ReconnectComponent from "./ReconnectComponent";
 
 export class Reconnect {
@@ -50,7 +50,7 @@ export class Reconnect {
 
     private node: cc.Node = null;
     private isWaitingHide = false;
-    private service: CommonService = null;
+    private service: ICommonService = null;
     private _enabled = true;
     /**@description 是否启用 */
     public get enabled() {
@@ -59,7 +59,7 @@ export class Reconnect {
     public set enabled(value: boolean) {
         this._enabled = value;
     }
-    constructor(service: CommonService) {
+    constructor(service: ICommonService) {
         this.service = service;
         Manager.eventDispatcher.addEventListener(EventApi.AdaptScreenEvent, this.onAdaptScreen, this)
     }
@@ -69,7 +69,7 @@ export class Reconnect {
     }
 
     public async show(content: string = i18n.reconnect) {
-        if( CC_DEBUG ) cc.log(`${this.service.serviceName} 显示重连`);
+        if (CC_DEBUG) cc.log(`${this.service.serviceName} 显示重连`);
         if (this.isExistReconnectComponent()) {
             return;
         }
@@ -81,7 +81,7 @@ export class Reconnect {
             }
             this.node.name = "Reconnect";
             this.node.removeFromParent();
-            Manager.uiManager.addChild(this.node,ViewZOrder.Loading);
+            Manager.uiManager.addChild(this.node, ViewZOrder.Loading, GameLayer.Loading);
             this.node.position = cc.v3(0, 0, 0);
             if (this.isWaitingHide) {
                 this.isWaitingHide = false;

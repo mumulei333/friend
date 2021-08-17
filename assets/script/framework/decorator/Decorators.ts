@@ -8,8 +8,8 @@ export function injectService(service: Service) {
     return function (target: any) {
         let __load = target.prototype.onLoad;
         target.prototype.onLoad = function () {
-            if ( CC_DEBUG ) cc.log(`[injectService] ${cc.js.getClassName(this)} ---onLoad----`);
-            this.service = service;
+            if (CC_DEBUG) cc.log(`[injectService] ${cc.js.getClassName(this)} ---onLoad----`);
+            this._service = service;
             __load && __load.call(this);
         }
     }

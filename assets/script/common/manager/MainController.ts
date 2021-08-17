@@ -4,25 +4,27 @@ import { Reconnect } from "../net/Reconnect";
  * @description 主控制器 
  */
 
-const {ccclass, property,menu} = cc._decorator;
+const { ccclass, property, menu } = cc._decorator;
 
 @ccclass
 @menu("manager/MainController")
 export default class MainController extends cc.Component {
-    
+
     /**@description 进入后台的时间 */
     private _enterBackgroundTime = 0;
 
     @property(cc.Asset)
-    wssCacert : cc.Asset = null;
+    wssCacert: cc.Asset = null;
 
-    onLoad () {
+    onLoad() {
 
-        if( this.wssCacert ){
+        if (this.wssCacert) {
             Manager.wssCacertUrl = this.wssCacert.nativeUrl;
         }
 
         Manager.resolutionHelper.onLoad(this.node);
+
+        Manager.layerManager.onLoad()
 
         //全局网络管理器onLoad
         Manager.netManager.onLoad(this.node);
@@ -35,31 +37,31 @@ export default class MainController extends cc.Component {
         Manager.loading.preloadPrefab();
         Manager.alert.preloadPrefab();
         Reconnect.preloadPrefab();
-        
+
 
         //调试按钮事件注册
-        let showUI = cc.find("showUI",this.node);
-        let showNode = cc.find("showNode",this.node);
-        let showRes = cc.find("showRes",this.node);
-        let showComp = cc.find("showComponent",this.node);
-        if ( showUI && showNode && showRes && showComp){
+        let showUI = cc.find("showUI", this.node);
+        let showNode = cc.find("showNode", this.node);
+        let showRes = cc.find("showRes", this.node);
+        let showComp = cc.find("showComponent", this.node);
+        if (showUI && showNode && showRes && showComp) {
             showUI.zIndex = 9999;
             showNode.zIndex = 9999;
             showRes.zIndex = 9999;
             showComp.zIndex = 9999;
             let isShow = false;
-            if ( Config.isShowDebugButton ){
+            if (Config.isShowDebugButton) {
                 isShow = true;
-                showUI.on(cc.Node.EventType.TOUCH_END,()=>{
+                showUI.on(cc.Node.EventType.TOUCH_END, () => {
                     Manager.uiManager.printViews();
                 });
-                showNode.on(cc.Node.EventType.TOUCH_END,()=>{
+                showNode.on(cc.Node.EventType.TOUCH_END, () => {
                     Manager.uiManager.printCanvasChildren();
                 });
-                showRes.on(cc.Node.EventType.TOUCH_END,()=>{
+                showRes.on(cc.Node.EventType.TOUCH_END, () => {
                     Manager.cacheManager.printCaches();
                 });
-                showComp.on(cc.Node.EventType.TOUCH_END,()=>{
+                showComp.on(cc.Node.EventType.TOUCH_END, () => {
                     Manager.uiManager.printComponent();
                 });
             }
@@ -70,8 +72,8 @@ export default class MainController extends cc.Component {
         }
 
         //游戏事件注册
-        cc.game.on(cc.game.EVENT_HIDE,this.onEnterBackground,this);
-        cc.game.on(cc.game.EVENT_SHOW,this.onEnterForgeground,this);
+        cc.game.on(cc.game.EVENT_HIDE, this.onEnterBackground, this);
+        cc.game.on(cc.game.EVENT_SHOW, this.onEnterForgeground, this);
 
         //Service onLoad
         Manager.serviceManager.onLoad();
@@ -80,7 +82,7 @@ export default class MainController extends cc.Component {
         Manager.logicManager.onLoad(this.node);
     }
 
-    update(){
+    update() {
 
         //Service 网络调试
         Manager.serviceManager.update();
@@ -89,8 +91,8 @@ export default class MainController extends cc.Component {
         Manager.assetManager.remote.update();
     }
 
-    onDestroy(){
-        
+    onDestroy() {
+
         Manager.resolutionHelper.onDestroy();
 
         //网络管理器onDestroy
@@ -109,17 +111,17 @@ export default class MainController extends cc.Component {
         Manager.logicManager.onDestroy(this.node);
     }
 
-    private onEnterBackground(){
+    private onEnterBackground() {
         this._enterBackgroundTime = Date.timeNow();
-        cc.log(`[MainController]`,`onEnterBackground ${this._enterBackgroundTime}`);
+        cc.log(`[MainController]`, `onEnterBackground ${this._enterBackgroundTime}`);
         Manager.globalAudio.onEnterBackground();
         Manager.serviceManager.onEnterBackground();
     }
 
-    private onEnterForgeground(){
+    private onEnterForgeground() {
         let now = Date.timeNow();
         let inBackgroundTime = now - this._enterBackgroundTime;
-        cc.log(`[MainController]`,`onEnterForgeground ${now} background total time : ${inBackgroundTime}`);
+        cc.log(`[MainController]`, `onEnterForgeground ${now} background total time : ${inBackgroundTime}`);
         Manager.globalAudio.onEnterForgeground(inBackgroundTime);
         Manager.serviceManager.onEnterForgeground(inBackgroundTime);
     }

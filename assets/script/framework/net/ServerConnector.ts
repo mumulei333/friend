@@ -94,7 +94,7 @@ export class ServerConnector {
         this._curRecvHartTimeOutCount = 0;
     }
 
-    private _sendHartId: number = -1; //发送心跳包的间隔id
+    private _sendHartId: number | NodeJS.Timeout = -1; //发送心跳包的间隔id
     private _curRecvHartTimeOutCount: number = 0;//当前接收心跳超时的次数
 
     private _enabled = true;
@@ -115,7 +115,7 @@ export class ServerConnector {
      * @param port 
      * @param protocol 协议类型 ws / wss 
      */
-    public connect(ip: string, port: number | string = null, protocol: WebSocketType = "wss") {
+    public connect_server(ip: string, port: number | string = null, protocol: WebSocketType = "wss") {
         if (!this.enabled) {
             if (CC_DEBUG) cc.warn(`请求先启用`)
             return;
@@ -136,9 +136,9 @@ export class ServerConnector {
     /**
      * @description 清除定时发送心跳的定时器id
      */
-    private stopSendHartSchedule() {
+    protected stopSendHartSchedule() {
         if (this._sendHartId != -1) {
-            clearInterval(this._sendHartId);
+            clearInterval(this._sendHartId as NodeJS.Timeout);
             this._sendHartId = -1;
         }
     }
@@ -146,7 +146,7 @@ export class ServerConnector {
     /**
      * @description 启动心跳发送
      */
-    private startSendHartSchedule() {
+    protected startSendHartSchedule() {
         let self = this;
         this._sendHartId = setInterval(() => {
             self._curRecvHartTimeOutCount = self._curRecvHartTimeOutCount + 1;

@@ -1,19 +1,20 @@
+import { InjectData } from './../../framework/extentions/InjectData';
 
 /**@description 游戏内数据的公共基类 */
-export class GameData{
+export class GameData extends InjectData {
 
     /**@description 当前的asset bundle name */
-    public get bundle(){
+    public get bundle() {
         return "";
     }
 
     /**@description 清除数据 */
-    public clear(){
+    public clear() {
 
     }
 
     /**@description 游戏类型 */
-    public gameType(){
+    public gameType() {
         return -1;
     }
 }

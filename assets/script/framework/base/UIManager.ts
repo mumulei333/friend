@@ -172,8 +172,8 @@ export class UIManager {
     /**@description 驻留内存资源 */
     public retainMemory = new ViewDynamicLoadData(DYNAMIC_LOAD_RETAIN_MEMORY);
 
-    public preload<T extends UIView>(uiClass: UIClass<T>,bundle:BUNDLE_TYPE) {
-        return this._open(uiClass,bundle, 0, true, null,null);
+    public preload<T extends UIView>(uiClass: UIClass<T>, bundle: BUNDLE_TYPE) {
+        return this._open(uiClass, bundle, 0, 0, true, null, null);
     }
 
     /**
@@ -198,11 +198,11 @@ export class UIManager {
      * @param zIndex 节点层级 
      * @param args 传入参数列表
      */
-    public open<T extends UIView>(config: { type: UIClass<T>, bundle?:BUNDLE_TYPE , zIndex?: number, args?: any[] , delay?: number,name?:string}) : Promise<T>{
-        return this._open(config.type,config.bundle, config.zIndex ? config.zIndex : 0, false, config.args,config.delay,config.name);
+    public open<T extends UIView>(config: { type: UIClass<T>, bundle?: BUNDLE_TYPE, zIndex?: number, layerIndex?: number, args?: any[], delay?: number, name?: string }): Promise<T> {
+        return this._open(config.type, config.bundle, config.zIndex ? config.zIndex : 0, config.layerIndex ? config.layerIndex : 0, false, config.args, config.delay, config.name);
     }
 
-    private _open<T extends UIView>(uiClass: UIClass<T>, bundle:BUNDLE_TYPE, zOrder: number = 0, isPreload: boolean, args: any[],delay : number,name?:string) {
+    private _open<T extends UIView>(uiClass: UIClass<T>, bundle: BUNDLE_TYPE, zOrder: number = 0, layerIndex: number = 0, isPreload: boolean, args: any[], delay: number, name?: string) {
         return new Promise<T>((reslove, reject) => {
             if (!uiClass) {
                 if (CC_DEBUG) cc.log(`${this._logTag}open ui class error`);
@@ -211,12 +211,6 @@ export class UIManager {
             }
             let className = cc.js.getClassName(uiClass);
 
-            let canvas = this.getCanvas();
-            if (!canvas) {
-                if (CC_DEBUG) cc.error(`${this._logTag}找不到场景的Canvas节点`);
-                reslove(null);
-                return;
-            }
             let viewData = this.getViewData(uiClass);
             if (viewData) {
                 viewData.isPreload = isPreload;
@@ -227,7 +221,7 @@ export class UIManager {
                         if (viewData.view && cc.isValid(viewData.node)) {
                             viewData.node.zIndex = zOrder;
                             if (!viewData.node.parent) {
-                                this.addChild(viewData.node,zOrder,viewData.view);
+                                this.addChild(viewData.node, zOrder, layerIndex, viewData.view);
                             }
                             viewData.view.show(args);
                         }
@@ -237,8 +231,8 @@ export class UIManager {
                 }
                 else {
                     viewData.status = ViewStatus.WAITTING_NONE;
-                    if ( !isPreload ){
-                        Manager.uiLoading.show(delay,name);
+                    if (!isPreload) {
+                        Manager.uiLoading.show(delay, name);
                     }
                     //正在加载中
                     if (CC_DEBUG) cc.warn(`${this._logTag}${className} 正在加载中...`);
@@ -256,14 +250,14 @@ export class UIManager {
                 let progressCallback: (completedCount: number, totalCount: number, item: any) => void = null;
 
                 if (!isPreload) {
-                    Manager.uiLoading.show(delay,name);
+                    Manager.uiLoading.show(delay, name);
                     //预加载界面不显示进度
                     progressCallback = (completedCount: number, totalCount: number, item: any) => {
                         let progress = Math.ceil((completedCount / totalCount) * 100);
                         Manager.uiLoading.updateProgress(progress);
                     };
                 }
-                this.loadPrefab(bundle,prefabUrl, progressCallback)
+                this.loadPrefab(bundle, prefabUrl, progressCallback)
                     .then((prefab) => {
                         viewData.info = new ResourceInfo;
                         viewData.info.url = prefabUrl;
@@ -271,7 +265,7 @@ export class UIManager {
                         viewData.info.data = prefab;
                         viewData.info.bundle = bundle;
                         Manager.assetManager.retainAsset(viewData.info);
-                        this.createNode(className, uiClass, reslove, prefab, args, zOrder,bundle);
+                        this.createNode(className, uiClass, reslove, prefab, args, zOrder, layerIndex, bundle);
                         Manager.uiLoading.hide();
                     }).catch((reason) => {
                         viewData.isLoaded = true;
@@ -280,10 +274,10 @@ export class UIManager {
                         viewData.doCallback(null, className, "打开界面异常");
                         reslove(null);
                         let uiName = "";
-                        if ( CC_DEBUG ){
+                        if (CC_DEBUG) {
                             uiName = className;
                         }
-                        if ( name ){
+                        if (name) {
                             uiName = name;
                         }
                         Manager.tips.show(`加载界面${uiName}失败，请重试`);
@@ -293,7 +287,7 @@ export class UIManager {
         });
     }
 
-    private _addComponent<T extends UIView>(uiNode: cc.Node, uiClass: UIClass<T>, viewData: ViewData, className: string, zOrder: number, args: any[],bundle:BUNDLE_TYPE): UIView {
+    private _addComponent<T extends UIView>(uiNode: cc.Node, uiClass: UIClass<T>, viewData: ViewData, className: string, zOrder: number, layerIndex: number, args: any[], bundle: BUNDLE_TYPE): UIView {
         if (uiNode) {
             //挂载脚本
             let view = uiNode.getComponent(uiClass) as UIView;
@@ -332,7 +326,7 @@ export class UIManager {
             }
 
             if (!viewData.isPreload) {
-                this.addChild(uiNode,zOrder,view);
+                this.addChild(uiNode, zOrder, layerIndex, view);
             }
             return view;
         }
@@ -341,7 +335,15 @@ export class UIManager {
         }
     }
 
-    private createNode<T extends UIView>(className: string, uiClass: UIClass<T>, reslove, data: cc.Prefab, args: any[], zOrder: number,bundle:BUNDLE_TYPE) {
+    private createNode<T extends UIView>(
+        className: string,
+        uiClass: UIClass<T>,
+        reslove,
+        data: cc.Prefab,
+        args: any[],
+        zOrder: number,
+        layerIndex: number,
+        bundle: BUNDLE_TYPE) {
         let viewData = this._viewDatas.get(className);
         viewData.isLoaded = true;
         if (viewData.status == ViewStatus.WAITTING_CLOSE) {
@@ -355,7 +357,7 @@ export class UIManager {
 
         let uiNode: cc.Node = cc.instantiate(data);
         viewData.node = uiNode;
-        let view = this._addComponent(uiNode, uiClass, viewData, className, zOrder, args,bundle);
+        let view = this._addComponent(uiNode, uiClass, viewData, className, zOrder, layerIndex, args, bundle);
         if (!view) {
             reslove(null);
             return;
@@ -379,12 +381,12 @@ export class UIManager {
         }
     }
 
-    private loadPrefab( bundle: BUNDLE_TYPE, url: string, progressCallback: (completedCount: number, totalCount: number, item: any) => void) {
+    private loadPrefab(bundle: BUNDLE_TYPE, url: string, progressCallback: (completedCount: number, totalCount: number, item: any) => void) {
         return new Promise<cc.Prefab>((resolove, reject) => {
-            if ( bundle == undefined || bundle == "" || bundle == null ){
+            if (bundle == undefined || bundle == "" || bundle == null) {
                 bundle = BUNDLE_RESOURCES;
             }
-            Manager.assetManager.load(bundle,url,cc.Prefab,progressCallback,(data: ResourceCacheData) => {
+            Manager.assetManager.load(bundle, url, cc.Prefab, progressCallback, (data: ResourceCacheData) => {
                 if (data && data.data && data.data instanceof cc.Prefab) {
                     resolove(data.data);
                 }
@@ -395,26 +397,14 @@ export class UIManager {
         });
     }
 
-    public getCanvas(): cc.Node {
-        let rootScene = cc.director.getScene();
-        if (!rootScene) {
-            if (CC_DEBUG) cc.error(`${this._logTag}当前场景为空 ： ${cc.director.getScene().name}`);
-            return null;
-        }
 
-        let root = rootScene.getChildByName("Canvas");
-        if (!root) {
-            if (CC_DEBUG) cc.error(`${this._logTag}当前场景上找不到 Canvas 节点`);
-            return null;
-        }
-        return root;
-    }
 
-    public addChild( node : cc.Node , zOrder : number , adpater : IFullScreenAdapt = null ){
-        if( !node ) return;
-        this.getCanvas().addChild(node);
-        node.zIndex = zOrder;
-        Manager.resolutionHelper.fullScreenAdapt(node,adpater);
+    public addChild(node: cc.Node, zOrder: number, layerIndex: number, adpater: IFullScreenAdapt = null) {
+        if (!node) return;
+        Manager.layerManager.getLayer(layerIndex)!.addChild(node, zOrder)
+        // this.getCanvas().addChild(node);
+        // node.zIndex = zOrder;
+        Manager.resolutionHelper.fullScreenAdapt(node, adpater);
     }
 
     /**@description 添加动态加载的本地资源 */
@@ -568,20 +558,20 @@ export class UIManager {
     public fullScreenAdapt() {
         this._viewDatas.forEach((data) => {
             if (data.isLoaded && data.view) {
-                Manager.resolutionHelper.fullScreenAdapt(data.view.node,data.view);
+                Manager.resolutionHelper.fullScreenAdapt(data.view.node, data.view);
             }
         });
     }
 
     /*获取当前canvas的组件 */
     public getCanvasComponent(): cc.Component {
-        return this.getCanvas().getComponent("MainController");
+        return Manager.layerManager.getCanvas().getComponent("MainController");
     }
 
     public addComponent<T extends cc.Component>(type: { new(): T }): T;
     public addComponent(className: string): any;
     public addComponent(data: any) {
-        let canvas = this.getCanvas();
+        let canvas = Manager.layerManager.getCanvas();
         if (canvas) {
             let component = canvas.getComponent(data);
             if (component) {
@@ -601,7 +591,7 @@ export class UIManager {
     }
 
     public removeComponent(component: string | cc.Component) {
-        let canvas = this.getCanvas();
+        let canvas = Manager.layerManager.getCanvas();
         if (canvas) canvas.removeComponent(component);
     }
 
@@ -615,7 +605,7 @@ export class UIManager {
 
     public printCanvasChildren() {
         cc.log(`${this._logTag}-----------printCanvasChildren--start-----------`);
-        let canvas = this.getCanvas();
+        let canvas = Manager.layerManager.getCanvas();
         if (canvas) {
             let children = canvas.children;
             for (let i = 0; i < children.length; i++) {
@@ -625,12 +615,12 @@ export class UIManager {
         cc.log(`${this._logTag}-----------printCanvasChildren--end-----------`);
     }
 
-    public printComponent(){
-        let canvas : any = this.getCanvas();
-        if( canvas ){
-            let comps : any[] = canvas._components;
+    public printComponent() {
+        let canvas: any = Manager.layerManager.getCanvas();
+        if (canvas) {
+            let comps: any[] = canvas._components;
             cc.log(`${this._logTag} -------------- print component start --------------`);
-            for( let i = 0 ; i < comps.length ; i++ ){
+            for (let i = 0; i < comps.length; i++) {
                 cc.log(cc.js.getClassName(comps[i]));
             }
             cc.log(`${this._logTag} -------------- print component end --------------`);

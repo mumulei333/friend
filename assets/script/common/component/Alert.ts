@@ -1,5 +1,5 @@
 import { EventApi } from "../../framework/event/EventApi";
-import { ViewZOrder, Config } from "../config/Config";
+import { ViewZOrder, Config, GameLayer } from "../config/Config";
 import { BUNDLE_RESOURCES, ResourceCacheData } from "../../framework/base/Defines";
 import { i18n } from "../language/CommonLanguage";
 
@@ -203,30 +203,30 @@ export default class Alert {
         Manager.resolutionHelper.fullScreenAdapt(this.curPanel);
     }
 
-    private getConfig( config : AlertConfig ){
-        let result : AlertConfig = {};
-        if( config.tag ){
+    private getConfig(config: AlertConfig) {
+        let result: AlertConfig = {};
+        if (config.tag) {
             result.tag = config.tag;
         }
-        if( config.text){
+        if (config.text) {
             result.text = config.text;
         }
-        if( config.title){
+        if (config.title) {
             result.title = config.title;
         }
-        if( config.confirmString){
+        if (config.confirmString) {
             result.confirmString = config.confirmString;
         }
-        if( config.cancelString){
+        if (config.cancelString) {
             result.cancelString = config.cancelString;
         }
-        if( config.richText){
+        if (config.richText) {
             result.richText = config.richText;
         }
-        if( config.immediatelyCallback){
+        if (config.immediatelyCallback) {
             result.immediatelyCallback = config.immediatelyCallback;
         }
-        if( config.isRepeat){
+        if (config.isRepeat) {
             result.isRepeat = config.isRepeat;
         }
         return result;
@@ -259,14 +259,14 @@ export default class Alert {
     }
 
     /**@description 获取当前显示弹出的配置 */
-    public currentShow( tag? : string | number ){
-        if( this.curPanel ){
+    public currentShow(tag?: string | number) {
+        if (this.curPanel) {
             let current = this.curPanel.getComponent(AlertDialog).config;
-            if( tag ){
-                if( current.tag == tag ){
+            if (tag) {
+                if (current.tag == tag) {
                     return current;
                 }
-            }else{
+            } else {
                 return current;
             }
         }
@@ -340,7 +340,7 @@ export default class Alert {
             if (!this.curPanel) {
                 this.curPanel = cc.instantiate(this.prefab);
                 let dialog = this.curPanel.addComponent(AlertDialog);
-                Manager.uiManager.addChild(this.curPanel,ViewZOrder.Alert)
+                Manager.uiManager.addChild(this.curPanel, ViewZOrder.Alert, GameLayer.Alert)
                 dialog.show(config);
             }
         }

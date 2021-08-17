@@ -400,15 +400,15 @@ declare interface GameEventInterface {
 }
 
 declare interface Singleton<T> {
-    new(): T;
-    /**
-     *@description 单例统一实现 
-     */
-    Instance(): T;
+	new(): T;
+	/**
+	 *@description 单例统一实现 
+	 */
+	Instance(): T;
 }
 
 /**@description 获取根据类型获取单列 */
-declare function getSingleton<T>( SingletonClass : Singleton<T>):T;
+declare function getSingleton<T>(SingletonClass: Singleton<T>): T;
 
 declare namespace td {
 	export let COMMON_LANGUAGE_NAME: string;
@@ -622,9 +622,8 @@ declare namespace td {
 		 * @param zIndex 节点层级 
 		 * @param args 传入参数列表
 		 */
-		open<T extends UIView>(config: { type: UIClass<T>, bundle?: BUNDLE_TYPE, zIndex?: number, args?: any[], delay?: number, name?: string }): Promise<T>;
-		getCanvas(): cc.Node;
-		addChild(node: cc.Node, zOrder: number, adpater: IFullScreenAdapt = null): void;
+		open<T extends UIView>(config: { type: UIClass<T>, bundle?: BUNDLE_TYPE, zIndex?: number, layerIndex?: number, args?: any[], delay?: number, name?: string }): Promise<T>;
+		addChild(node: cc.Node, zOrder: number, layerIndex: number, adpater: IFullScreenAdapt = null): void;
 		/**@description 添加动态加载的本地资源 */
 		addLocal(info: ResourceInfo, className: string): void;
 		/**@description 添加动态加载的远程资源 */
@@ -1023,7 +1022,14 @@ declare namespace td {
 		removeNetControllers(): void;
 	}
 
+	export class LayerManager {
+		getLayer(layerIndex: number): cc.Node | null
+		getCanvas(): cc.Node | null
+		onLoad(): void
+	}
+
 	export class FramewokManager {
+		readonly layerManager: LayerManager
 		/**@description 常驻资源指定的模拟view */
 		readonly retainMemory: ViewDynamicLoadData;
 		/**@description 语言包 */
@@ -1094,4 +1100,8 @@ declare namespace td {
 	}
 }
 
+declare namespace pomelo {
+	function request(route: string, msg: { [keyof: string]: any }): void
+	function notify(route: string, msg: { [keyof: string]: any }): void
+}
 declare let Manager: td.FramewokManager;
