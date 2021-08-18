@@ -66,9 +66,11 @@ export namespace Config {
 
 export namespace MaskConfig {
     /**@description 是否启用全局Mask */
-    export const EnableMask = false
+    export const Enable = true
     /**@description Mask透明度 */
-    export const DefaultOpacity = 120
+    export const defaultOpacity = 120
+    /**@description 遮罩的默认颜色 */
+    export const defaultColor = "#000000"
 }
 
 

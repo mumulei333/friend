@@ -138,7 +138,6 @@ class ViewData {
 }
 
 export class UIManager {
-
     private static _instance: UIManager = null;
     public static Instance() { return this._instance || (this._instance = new UIManager()); }
     public _logTag = `[UIManager]`;
