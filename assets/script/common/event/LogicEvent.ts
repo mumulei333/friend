@@ -1,4 +1,4 @@
-import { UIView ,UIClass} from "../../framework/ui/UIView";
+import { UIView, UIClass } from "../../framework/ui/UIView";
 
 /**
  * @description 逻辑模块类型
@@ -52,6 +52,9 @@ export let LogicEvent = {
 
     /**@description 返回登录界面 */
     ENTER_LOGIN: "ENTER_LOGIN",
+
+    /**@description 检测Mask是否可以关闭 */
+    CHECK_OFF_MASK: "CHECK_OFF_MASK",
 
     /**@description 进入房间列表 */
     ENTER_ROOM_LIST: "ENTER_ROOM_LIST"

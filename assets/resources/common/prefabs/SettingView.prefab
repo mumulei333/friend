@@ -34,13 +34,10 @@
       },
       {
         "__id__": 93
-      },
-      {
-        "__id__": 94
       }
     ],
     "_prefab": {
-      "__id__": 95
+      "__id__": 94
     },
     "_opacity": 255,
     "_color": {
@@ -109,7 +106,7 @@
       "__id__": 1
     },
     "_children": [],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 3
@@ -1003,7 +1000,6 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_useOriginalSize": false,
     "_string": "退出",
     "_N$string": "退出",
     "_fontSize": 50,
@@ -1340,7 +1336,6 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_useOriginalSize": false,
     "_string": "音乐",
     "_N$string": "音乐",
     "_fontSize": 40,
@@ -2363,7 +2358,6 @@
     ],
     "_srcBlendFactor": 770,
     "_dstBlendFactor": 771,
-    "_useOriginalSize": false,
     "_string": "音效",
     "_N$string": "音效",
     "_fontSize": 40,
@@ -3445,16 +3439,6 @@
     "sync": false
   },
   {
-    "__type__": "cc.BlockInputEvents",
-    "_name": "",
-    "_objFlags": 0,
-    "node": {
-      "__id__": 1
-    },
-    "_enabled": true,
-    "_id": ""
-  },
-  {
     "__type__": "cc.Widget",
     "_name": "",
     "_objFlags": 0,
@@ -3538,7 +3522,7 @@
     "asset": {
       "__uuid__": "df6d5d70-ab8d-4e10-abaf-151ace960441"
     },
-    "fileId": "31VgGhFeFAWr2Temwce7TL",
+    "fileId": "",
     "sync": false
   }
 ]

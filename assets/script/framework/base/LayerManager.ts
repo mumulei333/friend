@@ -7,9 +7,7 @@ export class LayerManager {
 
     private _layers: cc.Node[] = []
 
-    onLoad() {
-        if (Config.EnableLayerManager) { this._creatLayers() }
-    }
+    onLoad() { if (Config.EnableLayerManager) { this._creatLayers() } }
 
 
     private _creatLayers(): void {

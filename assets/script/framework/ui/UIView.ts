@@ -17,11 +17,14 @@ export interface UIClass<T extends UIView> {
 @ccclass
 export class UIView extends EventComponent implements IFullScreenAdapt {
     onFullScreenAdapt() {
-        
+
     }
 
     /**@description 是否允许接受键盘事件 */
     private _isEnableKey = false;
+
+    /**@descripton 是否可以被 Mask 触发关闭 */
+    public get isMaskClose(): boolean { return false }
 
     public static getPrefabUrl(): string {
         if (CC_DEBUG) {
@@ -63,10 +66,10 @@ export class UIView extends EventComponent implements IFullScreenAdapt {
 
     private _bundle: BUNDLE_TYPE = null;
     /**指向当前View打开时的bundle */
-    public set bundle( value ){
+    public set bundle(value) {
         this._bundle = value;
     }
-    public get bundle(){
+    public get bundle() {
         return this._bundle;
     }
 
@@ -159,10 +162,10 @@ export class UIView extends EventComponent implements IFullScreenAdapt {
      */
     setEnabledKeyBack(isEnabled: boolean) {
         if (isEnabled) {
-            cc.systemEvent.off(cc.SystemEvent.EventType.KEY_UP,this.onKeyUp,this);
-            cc.systemEvent.on(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp,this);
+            cc.systemEvent.off(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);
+            cc.systemEvent.on(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);
         } else {
-            cc.systemEvent.off(cc.SystemEvent.EventType.KEY_UP,this.onKeyUp,this);
+            cc.systemEvent.off(cc.SystemEvent.EventType.KEY_UP, this.onKeyUp, this);
         }
 
         this._isEnableKey = isEnabled;
@@ -178,7 +181,7 @@ export class UIView extends EventComponent implements IFullScreenAdapt {
         }
         if (ev.keyCode == cc.macro.KEY.escape) {
             this.onKeyBack(ev);
-        }else{
+        } else {
             ev.stopPropagation();
         }
     }
@@ -195,8 +198,8 @@ export class UIView extends EventComponent implements IFullScreenAdapt {
         this.audioHelper.owner = this;
         super.onLoad();
     }
-    
-    onDestroy(){
+
+    onDestroy() {
         this.setEnabledKeyBack(false);
         this.enableFrontAndBackgroundSwitch = false;
         super.onDestroy();

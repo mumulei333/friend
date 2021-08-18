@@ -36,6 +36,7 @@ export default class MainController extends cc.Component {
         Manager.uiLoading.preloadPrefab();
         Manager.loading.preloadPrefab();
         Manager.alert.preloadPrefab();
+        Manager.popupManager.preloadPrefab()
         Reconnect.preloadPrefab();
 
 

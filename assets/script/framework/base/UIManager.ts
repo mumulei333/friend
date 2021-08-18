@@ -153,9 +153,9 @@ export class UIManager {
         return viewData;
     }
 
-    private getClassName(className: string): string;
-    private getClassName<T extends UIView>(uiClass: UIClass<T>): string;
-    private getClassName(data: any): string {
+    public getClassName(className: string): string;
+    public getClassName<T extends UIView>(uiClass: UIClass<T>): string;
+    public getClassName(data: any): string {
         if (!data) return null;
         let className = null;
         if (typeof data == "string") {
@@ -180,13 +180,14 @@ export class UIManager {
      * @description open<T extends UIView>(config: { type: UIClass<T>, zIndex?: number, args?: any[] , delay?: number}) : Promise<T>
      * @param config 配置信息 
      * @param config.type UIView
-     * @param config.zIndex 节点层级，默认为0
+     * @param config.zIndex 节点层级，默认为0  
      * @param config.args 传入的参数列表
      * @param config.delay 
      * delay > 0 时间未加载界面完成显示加载动画，
      * delay = 0 则不显示加载动画，但仍然会显示UILoading,在加载界面时阻挡玩家的触摸事件
      * delay 其它情况以UILoading的默认显示时间为准
      * @param config.name 界面名字，如 商城 首充
+     * @param config.byPop 是否队列弹窗
      * @example 示例
      * Manager.uiManager.open({type:GameLayer});
      * Manager.uiManager.open({type:GameLayer,delay:ViewDelay.delay});
@@ -198,11 +199,11 @@ export class UIManager {
      * @param zIndex 节点层级 
      * @param args 传入参数列表
      */
-    public open<T extends UIView>(config: { type: UIClass<T>, bundle?: BUNDLE_TYPE, zIndex?: number, layerIndex?: number, args?: any[], delay?: number, name?: string }): Promise<T> {
-        return this._open(config.type, config.bundle, config.zIndex ? config.zIndex : 0, config.layerIndex ? config.layerIndex : 0, false, config.args, config.delay, config.name);
+    public open<T extends UIView>(config: { type: UIClass<T>, bundle?: BUNDLE_TYPE, zIndex?: number, layerIndex?: number, args?: any[], delay?: number, name?: string, byPopup?: boolean }): Promise<T> {
+        return this._open(config.type, config.bundle, config.zIndex ? config.zIndex : 0, config.layerIndex ? config.layerIndex : 0, false, config.args, config.delay, config.name, config.byPopup);
     }
 
-    private _open<T extends UIView>(uiClass: UIClass<T>, bundle: BUNDLE_TYPE, zOrder: number = 0, layerIndex: number = 0, isPreload: boolean, args: any[], delay: number, name?: string) {
+    private _open<T extends UIView>(uiClass: UIClass<T>, bundle: BUNDLE_TYPE, zOrder: number = 0, layerIndex: number = 0, isPreload: boolean, args: any[], delay: number, name?: string, byPop: boolean = false) {
         return new Promise<T>((reslove, reject) => {
             if (!uiClass) {
                 if (CC_DEBUG) cc.log(`${this._logTag}open ui class error`);
@@ -222,7 +223,9 @@ export class UIManager {
                             viewData.node.zIndex = zOrder;
                             if (!viewData.node.parent) {
                                 this.addChild(viewData.node, zOrder, layerIndex, viewData.view);
+                                if (byPop) { Manager.popupManager.popup(viewData.view) }
                             }
+
                             viewData.view.show(args);
                         }
                     }
@@ -265,7 +268,7 @@ export class UIManager {
                         viewData.info.data = prefab;
                         viewData.info.bundle = bundle;
                         Manager.assetManager.retainAsset(viewData.info);
-                        this.createNode(className, uiClass, reslove, prefab, args, zOrder, layerIndex, bundle);
+                        this.createNode(className, uiClass, reslove, prefab, args, zOrder, layerIndex, bundle, byPop);
                         Manager.uiLoading.hide();
                     }).catch((reason) => {
                         viewData.isLoaded = true;
@@ -286,6 +289,7 @@ export class UIManager {
             }
         });
     }
+
 
     private _addComponent<T extends UIView>(uiNode: cc.Node, uiClass: UIClass<T>, viewData: ViewData, className: string, zOrder: number, layerIndex: number, args: any[], bundle: BUNDLE_TYPE): UIView {
         if (uiNode) {
@@ -343,7 +347,7 @@ export class UIManager {
         args: any[],
         zOrder: number,
         layerIndex: number,
-        bundle: BUNDLE_TYPE) {
+        bundle: BUNDLE_TYPE, byPop: boolean) {
         let viewData = this._viewDatas.get(className);
         viewData.isLoaded = true;
         if (viewData.status == ViewStatus.WAITTING_CLOSE) {
@@ -362,6 +366,7 @@ export class UIManager {
             reslove(null);
             return;
         }
+        if (byPop) { Manager.popupManager.popup(view) }
 
         if (viewData.status == ViewStatus.WATITING_HIDE) {
             //加载过程中有人隐藏了界面
@@ -435,6 +440,7 @@ export class UIManager {
         if (viewData) {
             viewData.status = ViewStatus.WAITTING_CLOSE;
             if (viewData.view && cc.isValid(viewData.node)) {
+                Manager.popupManager.close(viewData.view)
                 viewData.node.removeFromParent(true);
                 viewData.node.destroy();
             }

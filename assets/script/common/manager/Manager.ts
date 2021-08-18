@@ -16,6 +16,7 @@ import Loading from "../component/Loading";
 import { ServiceManager } from "./ServiceManager";
 import { CommonLanguage } from "../language/CommonLanguage";
 import { LayerManager } from "../../framework/base/LayerManager";
+import { PopupManage } from "./PopupManager";
 
 /**@description 游戏所有运行单例的管理 */
 class _Manager extends Framewok {
@@ -29,7 +30,6 @@ class _Manager extends Framewok {
     }
 
 
-
     private _hallNetManager: NetManager = null;
     /**@description 大厅的网络控制器组件管理器，注册到该管理器的网络组件，除登录界面外，都会被移除掉*/
     get hallNetManager() {
@@ -37,6 +37,10 @@ class _Manager extends Framewok {
             this._hallNetManager = new NetManager("hallNetManager");
         }
         return this._hallNetManager;
+    }
+
+    get popupManager() {
+        return getSingleton(PopupManage);
     }
 
     /**@description 网络Service管理器 */

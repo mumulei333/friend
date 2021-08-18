@@ -23,9 +23,9 @@ export default class HallView extends UIView {
         Manager.bundleManager.enterBundle(this.bundles[ev.target.userData]);
     }
 
-    private gamePage : cc.Node = null;
-    private gameItem : cc.Node = null;
-    private pageView : cc.PageView = null;
+    private gamePage: cc.Node = null;
+    private gameItem: cc.Node = null;
+    private pageView: cc.PageView = null;
     private readonly PAGE_COUNT = 6;
 
     private _bundles: BundleConfig[] = [];
@@ -46,11 +46,11 @@ export default class HallView extends UIView {
         return this._bundles;
     }
 
-    private createPage(){
+    private createPage() {
 
         //计算出总页数
-        let pageCount = Math.ceil( this.bundles.length / this.PAGE_COUNT );
-        for( let i = 0 ;i < pageCount ; i++ ){
+        let pageCount = Math.ceil(this.bundles.length / this.PAGE_COUNT);
+        for (let i = 0; i < pageCount; i++) {
             let page = cc.instantiate(this.gamePage);
             page.active = true;
             this.pageView.addPage(page);
@@ -65,7 +65,7 @@ export default class HallView extends UIView {
             game.on(cc.Node.EventType.TOUCH_END, this.onClick, this);
 
             //计算出所有页
-            let page = Math.floor(i/this.PAGE_COUNT);
+            let page = Math.floor(i / this.PAGE_COUNT);
             this.pageView.getPages()[page].addChild(game);
         }
     }
@@ -74,32 +74,32 @@ export default class HallView extends UIView {
         super.onLoad();
         this.gamePage = cc.find("games", this.node);
         this.gameItem = cc.find("gameItem", this.node);
-        this.pageView = cc.find("pageview",this.node).getComponent(cc.PageView);
+        this.pageView = cc.find("pageview", this.node).getComponent(cc.PageView);
         this.createPage();
 
         let bottom_op = cc.find("bottom_op", this.node);
         let setting = cc.find("setting", bottom_op);
         setting.on(cc.Node.EventType.TOUCH_END, () => {
-            Manager.uiManager.open({type:SettingView,bundle:BUNDLE_RESOURCES,zIndex:ViewZOrder.UI,name:"设置界面"});
+            Manager.uiManager.open({ type: SettingView, bundle: BUNDLE_RESOURCES, zIndex: ViewZOrder.UI, name: "设置界面" });
         });
 
         LobbyService.instance.enabled = false;
         GameService.instance.enabled = false;
         ChatService.instance.enabled = false;
 
-        let mail = cc.find("mial",bottom_op);
-        mail.on(cc.Node.EventType.TOUCH_END,()=>{
+        let mail = cc.find("mial", bottom_op);
+        mail.on(cc.Node.EventType.TOUCH_END, () => {
             let lan = Manager.language.getLanguage();
-            if( lan == cc.sys.LANGUAGE_CHINESE){
+            if (lan == cc.sys.LANGUAGE_CHINESE) {
                 lan = cc.sys.LANGUAGE_ENGLISH
-            }else if( lan == cc.sys.LANGUAGE_ENGLISH ) {
+            } else if (lan == cc.sys.LANGUAGE_ENGLISH) {
                 lan = cc.sys.LANGUAGE_CHINESE;
             }
             Manager.language.change(lan);
         });
 
         // this.audioHelper.playMusic("audio/background",this.bundle)
-        
+
         dispatchEnterComplete({ type: LogicType.HALL, views: [this] });
     }
 

@@ -1,4 +1,3 @@
-
 declare module cc {
 	export function dump(...args);
 	//相当于console.info //引擎已经设置为只读，没办法在取一个一样的名字
@@ -490,6 +489,8 @@ declare namespace td {
 	}
 
 	export class UIView extends EventComponent implements IFullScreenAdapt {
+		readonly isMaskClose?: boolean
+
 		static getPrefabUrl(): string;
 		/**@description 当前传入参数，即通过UI管理器打开时的传入参数 */
 		get args(): any[];
@@ -622,7 +623,7 @@ declare namespace td {
 		 * @param zIndex 节点层级 
 		 * @param args 传入参数列表
 		 */
-		open<T extends UIView>(config: { type: UIClass<T>, bundle?: BUNDLE_TYPE, zIndex?: number, layerIndex?: number, args?: any[], delay?: number, name?: string }): Promise<T>;
+		open<T extends UIView>(config: { type: UIClass<T>, bundle?: BUNDLE_TYPE, zIndex?: number, layerIndex?: number, byPopup?: boolean, args?: any[], delay?: number, name?: string }): Promise<T>;
 		addChild(node: cc.Node, zOrder: number, layerIndex: number, adpater: IFullScreenAdapt = null): void;
 		/**@description 添加动态加载的本地资源 */
 		addLocal(info: ResourceInfo, className: string): void;
@@ -648,6 +649,8 @@ declare namespace td {
 		printViews(): void;
 		printCanvasChildren(): void;
 		printComponent(): void;
+		getClassName(className: string): string;
+		getClassName<T extends UIView>(uiClass: UIClass<T>): string;
 	}
 	export class LocalStorage {
 		key: string;
@@ -1028,6 +1031,13 @@ declare namespace td {
 		onLoad(): void
 	}
 
+	declare interface PopupManager {
+		preloadPrefab(): void
+		popup(node: UIView): void
+		close(node?: UIView): void
+	}
+
+
 	export class FramewokManager {
 		readonly layerManager: LayerManager
 		/**@description 常驻资源指定的模拟view */
@@ -1038,6 +1048,8 @@ declare namespace td {
 		readonly eventDispatcher: EventDispatcher;
 		/**@description 界面管理器 */
 		readonly uiManager: UIManager;
+		/**@description 弹出层管理器 */
+		readonly popupManager: PopupManager
 		/**@description 本地仓库 */
 		readonly localStorage: LocalStorage;
 		/**@description 资源管理器 */

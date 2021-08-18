@@ -2,10 +2,12 @@ import { HallData } from './../../../bundles/hall/script/data/HallData';
 import { UIView } from "../../framework/ui/UIView";
 import { BundleConfig } from "../../common/base/HotUpdate";
 import { LogicEvent, dispatchEnterComplete, LogicType } from "../../common/event/LogicEvent";
-import { Config } from "../../common/config/Config";
+import { Config, GameLayer, ViewZOrder } from "../../common/config/Config";
 import DownloadLoading from "../../common/component/DownloadLoading";
 import { PinusGameService } from "../../common/net/PinusGameServer";
 import { injectService } from "../../framework/decorator/Decorators";
+import SettingView from '../../common/component/SettingView';
+import { BUNDLE_RESOURCES } from '../../framework/base/Defines';
 
 const { ccclass, property } = cc._decorator;
 
@@ -28,7 +30,9 @@ export default class LoginView extends UIView {
         super.onLoad();
         this._login = cc.find("login", this.node);
         this._login.on(cc.Node.EventType.TOUCH_END, () => {
-            pomelo.request("connector.entryHandler.enter", { type: 3, extendFiel: {} })
+            Manager.uiManager.open({ type: SettingView, bundle: BUNDLE_RESOURCES, zIndex: ViewZOrder.UI, layerIndex: GameLayer.Alert, byPopup: true, name: "设置界面" });
+            // pomelo.request("connector.entryHandler.enter", { type: 3, extendFiel: {} })
+            // pomelo.notify("connector.entryHandler.enter", { type: 3, extendFiel: {} })
             // Manager.bundleManager.enterBundle(new BundleConfig("大厅", Config.BUNDLE_HALL, 0, LogicEvent.ENTER_HALL, true));
         });
 

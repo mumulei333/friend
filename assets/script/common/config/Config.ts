@@ -13,6 +13,7 @@ export namespace Config {
         uiLoading: "common/prefabs/UILoading",
         loading: "common/prefabs/Loading",
         alert: "common/prefabs/Alert",
+        mask: "common/prefabs/MaskView"
     }
 
     /**@description 公共音效路径 */
@@ -59,6 +60,9 @@ export namespace Config {
 
     /**@description 是否启用layout布局分层*/
     export const EnableLayerManager = true;
+
+    /**@description 是否启用全局Mask */
+    export const EnableMask = false
 }
 
 /**
