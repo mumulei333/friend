@@ -61,9 +61,16 @@ export namespace Config {
     /**@description 是否启用layout布局分层*/
     export const EnableLayerManager = true;
 
+
+}
+
+export namespace MaskConfig {
     /**@description 是否启用全局Mask */
     export const EnableMask = false
+    /**@description Mask透明度 */
+    export const DefaultOpacity = 120
 }
+
 
 /**
  * @description 界面层级定义
