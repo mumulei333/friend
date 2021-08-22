@@ -1,8 +1,11 @@
-import { Config, GameLayer, ViewZOrder } from "../config/Config";
-import { BUNDLE_RESOURCES, ResourceCacheData } from "../../framework/base/Defines";
+
 /**
  * @description 提示
  */
+import { ViewZOrder, GameLayer } from "../../framework/Config/Config";
+import { BUNDLE_RESOURCES } from "../../framework/Support/AssetManager/Defined";
+import { Resource } from "../../framework/Support/AssetManager/Interfaces";
+import { GameConfig } from "../Config/GameConfig";
 
 class ToastItem extends cc.Component {
     private _content: cc.Node = null;
@@ -46,7 +49,7 @@ class ToastItem extends cc.Component {
     }
 }
 
-export default class Tips {
+export class Tips {
 
     private static _instance: Tips = null;
     public static Instance() { return this._instance || (this._instance = new Tips()); }
@@ -72,12 +75,12 @@ export default class Tips {
             } else {
                 Manager.assetManager.load(
                     BUNDLE_RESOURCES,
-                    Config.CommonPrefabs.tips,
+                    GameConfig.CommonPrefabs.tips,
                     cc.Prefab,
                     (finish: number, total: number, item: cc.AssetManager.RequestItem) => { },
-                    (data: ResourceCacheData) => {
+                    (data: Resource.ResourceCacheData) => {
                         if (data && data.data && data.data instanceof cc.Prefab) {
-                            Manager.assetManager.addPersistAsset(Config.CommonPrefabs.tips, data.data, BUNDLE_RESOURCES);
+                            Manager.assetManager.addPersistAsset(GameConfig.CommonPrefabs.tips, data.data, BUNDLE_RESOURCES);
                             this._prefab = data.data;
                             resolve(true);
                         } else {
@@ -98,7 +101,7 @@ export default class Tips {
                 itemComp.fadeIn();
                 node.userData = this._id++;
                 node.name = `Tips${node.userData}`;
-                Manager.uiManager.addChild(node, ViewZOrder.Tips, GameLayer.Tips)
+                Manager.uiManager.addChild({ node: node, zIndex: ViewZOrder.Tips, layer: GameLayer.Tips })
                 //整体上移
                 let length = this._queue.length;
                 for (let i = 0; i < length; i++) {

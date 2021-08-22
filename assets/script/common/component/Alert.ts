@@ -1,7 +1,9 @@
-import { EventApi } from "../../framework/event/EventApi";
-import { ViewZOrder, Config, GameLayer } from "../config/Config";
-import { BUNDLE_RESOURCES, ResourceCacheData } from "../../framework/base/Defines";
-import { i18n } from "../language/CommonLanguage";
+import { ViewZOrder, GameLayer } from "../../framework/Config/Config";
+import { BUNDLE_RESOURCES } from "../../framework/Support/AssetManager/Defined";
+import { Resource } from "../../framework/Support/AssetManager/Interfaces";
+import { EventApi } from "../../framework/Support/Event/EventApi";
+import { GameConfig } from "../Config/GameConfig";
+import { i18n } from "../Language/CommonLanguage";
 
 class AlertDialog extends cc.Component {
 
@@ -179,7 +181,7 @@ class AlertDialog extends cc.Component {
     }
 }
 
-export default class Alert {
+export class Alert {
 
     private static _instance: Alert = null;
     public static Instance() { return this._instance || (this._instance = new Alert()); }
@@ -340,7 +342,7 @@ export default class Alert {
             if (!this.curPanel) {
                 this.curPanel = cc.instantiate(this.prefab);
                 let dialog = this.curPanel.addComponent(AlertDialog);
-                Manager.uiManager.addChild(this.curPanel, ViewZOrder.Alert, GameLayer.Alert)
+                Manager.uiManager.addChild({ node: this.curPanel, zIndex: ViewZOrder.Alert, layer: GameLayer.Alert })
                 dialog.show(config);
             }
         }
@@ -364,14 +366,14 @@ export default class Alert {
                 this._isLoadingPrefab = true;
                 Manager.assetManager.load(
                     BUNDLE_RESOURCES,
-                    Config.CommonPrefabs.alert,
+                    GameConfig.CommonPrefabs.alert,
                     cc.Prefab,
                     (finish: number, total: number, item: cc.AssetManager.RequestItem) => { },
-                    (data: ResourceCacheData) => {
+                    (data: Resource.ResourceCacheData) => {
                         this._isLoadingPrefab = false;
                         if (data && data.data && data.data instanceof cc.Prefab) {
                             this.prefab = data.data;
-                            Manager.assetManager.addPersistAsset(Config.CommonPrefabs.alert, data.data, BUNDLE_RESOURCES);
+                            Manager.assetManager.addPersistAsset(GameConfig.CommonPrefabs.alert, data.data, BUNDLE_RESOURCES);
                             if (this.finishLoadCb) {
                                 this.finishLoadCb(true);
                                 this.finishLoadCb = null;
@@ -390,4 +392,3 @@ export default class Alert {
         });
     }
 }
-

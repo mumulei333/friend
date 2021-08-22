@@ -1,14 +1,7 @@
-/**
- * @description 网络Service服务管理
- */
-
-import { Config } from "../config/Config";
-import { LogicEvent } from "../event/LogicEvent";
-import { ChatService } from "../net/ChatService";
-import { GameService } from "../net/GameService";
-import { ICommonService } from "../net/ICommonService";
-import { LobbyService } from "../net/LobbyService";
-import { PinusGameService } from "../net/PinusGameServer";
+import { ICommonService } from "../../framework/Support/Service/ICommonService";
+import { PinusGameService } from "../../src/Net/Pinus/PinusGameService";
+import { GameConfig } from "../Config/GameConfig";
+import { LogicEvent } from "../Event/LogicEvent";
 
 export class ServiceManager implements GameEventInterface {
 
@@ -16,6 +9,7 @@ export class ServiceManager implements GameEventInterface {
     public static Instance() { return this._instance || (this._instance = new ServiceManager()); }
 
     private services: ICommonService[] = [];
+    private services_names: { [keyof: string]: ICommonService } = {}
 
     /**
      * @description 如果自己项目有多个网络Service，
@@ -23,9 +17,10 @@ export class ServiceManager implements GameEventInterface {
      * */
     onLoad() {
         //可根据自己项目需要，添加多个service ,添加时必须从优先级 高->低 添加
-        this.services.push(PinusGameService.instance)
+        this.addService(PinusGameService.instance, 3)
+        // this.services.push(PinusGameService.instance, 3)
 
-        PinusGameService.instance.priority = 3
+        // PinusGameService.instance.priority = 3
         //  this.services.push(LobbyService.instance);
         //  this.services.push(GameService.instance);
         //  this.services.push(ChatService.instance);
@@ -34,37 +29,48 @@ export class ServiceManager implements GameEventInterface {
         //  ChatService.instance.priority = 1;
     }
 
+    public getServiceByNmame(name: string): ICommonService | null {
+        return this.services_names[name]
+    }
+
+    private addService(service: ICommonService, priority: number) {
+        let className = cc.js.getClassName(service)
+        this.services_names[className] = service
+        this.services.push(service)
+        service.priority = priority
+    }
+
     /**@description 网络事件调度 */
     update() {
         this.services.forEach((value) => {
-            value && value.handMessage();
-        });
+            value && value.handMessage()
+        })
     }
 
     /**@description 主场景销毁,关闭所有连接 */
     onDestroy() {
         this.services.forEach((value) => {
-            value && value.close(true);
+            value && value.close(true)
         });
     }
 
     /**@description 关闭当前所有连接 */
     close() {
         this.services.forEach(value => {
-            value && value.close();
+            value && value.close()
         });
     }
 
     /**@description 进入后台 */
     onEnterBackground() {
         this.services.forEach(value => {
-            value && value.onEnterBackground();
+            value && value.onEnterBackground()
         })
     }
     /**@description 进入前台 */
     onEnterForgeground(inBackgroundTime: number) {
         this.services.forEach(value => {
-            value && value.onEnterForgeground(inBackgroundTime);
+            value && value.onEnterForgeground(inBackgroundTime)
         });
     }
 
@@ -84,17 +90,17 @@ export class ServiceManager implements GameEventInterface {
                 if (view) return;
                 service.reconnect.hide();
                 cc.log(`${service.serviceName} 断开`)
-                let current = Manager.alert.currentShow(Config.RECONNECT_ALERT_TAG);
+                let current = Manager.alert.currentShow(GameConfig.RECONNECT_ALERT_TAG);
                 if (current) {
                     let showService: ICommonService = current.userData;
                     if (service.priority > showService.priority) {
                         //如果尝试连接的优先级更高，显示优先级更高的连接
                         cc.log(`显示更新优先级重连弹出框 : ${service.serviceName}`);
-                        Manager.alert.close(Config.RECONNECT_ALERT_TAG);
+                        Manager.alert.close(GameConfig.RECONNECT_ALERT_TAG);
                     }
                 }
                 Manager.alert.show({
-                    tag: Config.RECONNECT_ALERT_TAG,
+                    tag: GameConfig.RECONNECT_ALERT_TAG,
                     isRepeat: false,
                     userData: service,
                     text: Manager.getLanguage(["warningReconnect", service.serviceName]),
@@ -113,7 +119,7 @@ export class ServiceManager implements GameEventInterface {
                 });
             });
         } else {
-            if (Manager.alert.isCurrentShow(Config.RECONNECT_ALERT_TAG)) {
+            if (Manager.alert.isCurrentShow(GameConfig.RECONNECT_ALERT_TAG)) {
                 if (CC_DEBUG) cc.warn(`有一个重连提示框显示，等待玩家操作`);
                 return;
             }

@@ -1,19 +1,11 @@
-import { UIView, UIClass } from "../../framework/ui/UIView";
+import { UIClass, UIView } from "../../framework/Support/Components/UIView";
 
 /**
- * @description 逻辑模块类型
+ * @description 专用进入完成事件LogicEvent.ENTER_COMPLETE
+ * @param data 数据
  */
-export enum LogicType {
-    /**@description 未知 */
-    UNKNOWN = "UNKNOWN",
-    /**@description 大厅 */
-    HALL = "HALL",
-    /**@description 游戏场景 */
-    GAME = "GAME",
-    /**@description 登录场景 */
-    LOGIN = "LOGIN",
-    /**@description 房间列表 */
-    ROOM_LIST = "ROOM_LIST",
+export function dispatchEnterComplete(data: LogicEventData) {
+    dispatch(LogicEvent.ENTER_COMPLETE, data);
 }
 
 /**
@@ -30,11 +22,19 @@ export interface LogicEventData {
 }
 
 /**
- * @description 专用进入完成事件LogicEvent.ENTER_COMPLETE
- * @param data 数据
+ * @description 逻辑模块类型
  */
-export function dispatchEnterComplete(data: LogicEventData) {
-    dispatch(LogicEvent.ENTER_COMPLETE, data);
+export enum LogicType {
+    /**@description 未知 */
+    UNKNOWN = "UNKNOWN",
+    /**@description 大厅 */
+    HALL = "HALL",
+    /**@description 游戏场景 */
+    GAME = "GAME",
+    /**@description 登录场景 */
+    LOGIN = "LOGIN",
+    /**@description 房间列表 */
+    ROOM_LIST = "ROOM_LIST",
 }
 
 /**

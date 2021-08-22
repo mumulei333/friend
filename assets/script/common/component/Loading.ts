@@ -1,11 +1,13 @@
-import { EventApi } from "../../framework/event/EventApi";
-import { ViewZOrder, Config, GameLayer } from "../config/Config";
-import { BUNDLE_RESOURCES, ResourceCacheData } from "../../framework/base/Defines";
+import { ViewZOrder, GameLayer } from "../../framework/Config/Config";
+import { BUNDLE_RESOURCES } from "../../framework/Support/AssetManager/Defined";
+import { Resource } from "../../framework/Support/AssetManager/Interfaces";
+import { EventApi } from "../../framework/Support/Event/EventApi";
+import { GameConfig } from "../Config/GameConfig";
+
 /**
  * @description 加载动画
  */
-
-export default class Loading {
+export class Loading {
     private static _instance: Loading = null;
     public static Instance() { return this._instance || (this._instance = new Loading()); }
     /**@description 当前loading节点 */
@@ -34,7 +36,7 @@ export default class Loading {
     private _showContentIndex = 0;
 
     /**@description 超时回调定时器id */
-    private _timerId: number | NodeJS.Timeout = -1;
+    private _timerId: number = -1;
 
     /**@description 显示的提示 */
     private _text: cc.Label = null;
@@ -49,7 +51,7 @@ export default class Loading {
      * @param timeOutCb 超时回调
      * @param timeout 显示超时时间
      */
-    public show(content: string | string[], timeOutCb?: () => void, timeout = Config.LOADING_TIME_OUT) {
+    public show(content: string | string[], timeOutCb?: () => void, timeout = GameConfig.LOADING_TIME_OUT) {
         this._timeOutCb = timeOutCb;
         if (Array.isArray(content)) {
             this._content = content;
@@ -66,7 +68,7 @@ export default class Loading {
         let finish = await this.loadPrefab();
         if (finish) {
             this._node.removeFromParent();
-            Manager.uiManager.addChild(this._node, ViewZOrder.Loading, GameLayer.Loading);
+            Manager.uiManager.addChild({ node: this._node, zIndex: ViewZOrder.Loading, layer: GameLayer.Loading });
             this._node.position = cc.Vec3.ZERO;
             this._text = cc.find("content/text", this._node).getComponent(cc.Label);
             this._showContentIndex = 0;
@@ -92,7 +94,7 @@ export default class Loading {
                 .call(() => {
                     this._text.string = this._content[this._showContentIndex];
                 })
-                .delay(Config.LOADING_CONTENT_CHANGE_INTERVAL)
+                .delay(GameConfig.LOADING_CONTENT_CHANGE_INTERVAL)
                 .call(() => {
                     this._showContentIndex++;
                     if (this._showContentIndex >= this._content.length) {
@@ -123,7 +125,7 @@ export default class Loading {
     /**@description 停止计时 */
     private stopTimeOutTimer() {
         this._timeOutCb = null;
-        clearTimeout(this._timerId as NodeJS.Timeout);
+        clearTimeout(this._timerId);
         this._timerId = -1;
     }
 
@@ -145,13 +147,13 @@ export default class Loading {
             this._isLoadingPrefab = true;
             Manager.assetManager.load(
                 BUNDLE_RESOURCES,
-                Config.CommonPrefabs.loading,
+                GameConfig.CommonPrefabs.loading,
                 cc.Prefab,
                 (finish: number, total: number, item: cc.AssetManager.RequestItem) => { },
-                (data: ResourceCacheData) => {
+                (data: Resource.ResourceCacheData) => {
                     this._isLoadingPrefab = false;
                     if (data && data.data && data.data instanceof cc.Prefab) {
-                        Manager.assetManager.addPersistAsset(Config.CommonPrefabs.loading, data.data, BUNDLE_RESOURCES)
+                        Manager.assetManager.addPersistAsset(GameConfig.CommonPrefabs.loading, data.data, BUNDLE_RESOURCES)
                         this._node = cc.instantiate(data.data);
                         resolove(true);
                     }
@@ -174,3 +176,5 @@ export default class Loading {
         }
     }
 }
+
+// td.Loading = Loading

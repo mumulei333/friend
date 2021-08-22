@@ -1,21 +1,13 @@
-/**
- * @description 网络控制器管理器
- */
-
 export class NetManager {
-    private name = "";
-    constructor(name : string) {
-        this.name = name;
-    }
+    constructor(private name: string) { }
 
     private node: cc.Node = null;
-    public onLoad(node: cc.Node) {
-        this.node = node;
-    }
+    public onLoad(node: cc.Node) { this.node = node }
+
 
     public onDestroy(node: cc.Node) {
-        this.removeNetControllers();
-        this.node = null;
+        this.removeNetControllers()
+        this.node = null
     }
 
     /**@description 网络控制器注册 Controller<T>的子类 */
@@ -54,4 +46,5 @@ export class NetManager {
     }
     /**@description 注册的网络控制器组件类型 */
     private types = [];
+
 }
