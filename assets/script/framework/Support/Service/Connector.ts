@@ -1,4 +1,3 @@
-import { Codec, Message } from "./Codec/Codec";
 import { WebSocketClinet } from "./WebSocketClinet";
 
 export default abstract class Connector {

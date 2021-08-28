@@ -8,6 +8,10 @@ import { Codec, Message } from "./Codec/Codec";
 
 export abstract class Service extends Connector {
     private _Process: MessageProcess = new MessageProcess()
+    public set Process(val: typeof MessageProcess) {
+        if (val == null) { return }
+        this._Process = new val
+    }
 
     /**@description 数据流消息包头定义类型 */
     public set Codec(value: new () => Codec) { this._Process.Codec = value }
