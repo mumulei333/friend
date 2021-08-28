@@ -1,15 +1,14 @@
-import { MessageHeader } from './../../../framework/Support/Service/Message/BaseMessage/MessageHeader';
 import { EventApi } from "../../../framework/Support/Event/EventApi";
 import { ICommonService } from "../../../framework/Support/Service/ICommonService";
-import { Message } from "../../../framework/Support/Service/Message/BaseMessage/Message";
 import { Reconnect } from "../../../framework/Support/Service/Reconnect";
 import { pomelo_protobuf } from "./MessagePackage/protobuf";
 import { pomelo_Protocol } from "./MessagePackage/protocol";
 import { PomeloData } from "./PomeloData";
 import { pomelo_message } from './MessagePackage/message';
+import { Codec, Message } from '../../../framework/Support/Service/Codec/Codec';
 export class PomeloService extends ICommonService {
-    protected isHeartBeat(data: MessageHeader): boolean {
-        if (data.CmdName == String(pomelo_Protocol.Package.TYPE_HEARTBEAT)) {
+    protected isHeartBeat(data: Codec): boolean {
+        if (data.MsgID == String(pomelo_Protocol.Package.TYPE_HEARTBEAT)) {
             return true
         }
         else { return false }
@@ -91,7 +90,7 @@ export class PomeloService extends ICommonService {
 
     /** @description 握手成功回调 */
     private handshake(data: Message) {
-        let dat: { code: number, sys: { dict: { [key: string]: number }, dictVersion: string, heartbeat: number } } = data.data
+        let dat: { code: number, sys: { dict: { [key: string]: number }, dictVersion: string, heartbeat: number } } = data.Data
         if (dat.code == RES_OLD_CLIENT) {
             // return this.excut("error", "client version not fullfill")
         }
@@ -148,7 +147,7 @@ export class PomeloService extends ICommonService {
 
     /** @description Pomelo 服务端有数据到达 */
     private onData(data: Message) {
-        this.addMessageQueue(data.getExcutName, data.data.body, false)
+        this.addMessageQueue(data.MsgID, data.Data.body, true)
     }
 
     public listenet(event: string, fn: Function) {
@@ -199,7 +198,10 @@ export class PomeloService extends ICommonService {
 
 class PomeloMessage extends Message {
     private _routeName: string = ""
-    decode(data: { body: Uint8Array, type: number }): boolean {
+    private content: any = null
+    Encode(): boolean { return false }
+
+    Decode(data: { body: Uint8Array, type: number }): boolean {
         if (data.type == PomeloData.package.TYPE_HANDSHAKE) {
             return this.decodeHandshake(data.body)
         } else if (data.type = PomeloData.package.TYPE_DATA) {
@@ -251,8 +253,8 @@ class PomeloMessage extends Message {
             return JSON.parse(pomelo_Protocol.strdecode(msg.body))
         }
     }
-    get data() { return this.content }
-    get getExcutName() { return this._routeName }
+    get Data() { return this.content }
+    get MsgID() { return this._routeName }
 }
 
 

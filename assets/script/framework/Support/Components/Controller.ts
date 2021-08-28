@@ -3,7 +3,7 @@
  */
 
 import { EventApi } from "../Event/EventApi";
-import { Message } from "../Service/Message/BaseMessage/Message";
+import { Message } from "../Service/Codec/Codec";
 import { Service } from "../Service/Service";
 import { ServiceEvent } from "../Service/ServiceEvent";
 import { EventComponent } from "./EventComponent";

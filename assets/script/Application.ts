@@ -1,3 +1,4 @@
+import { GameDataManager } from './Common/Manager/GameDataManager';
 import { Alert } from './Common/Component/Alert';
 import { Loading } from './Common/Component/Loading';
 import { Tips } from './Common/Component/Tips';
@@ -28,6 +29,8 @@ class _Statup extends Framework {
     get logicManager() { return getSingleton(LogicManager) }
 
     get bundleManager() { return getSingleton(BundleManager) }
+
+    get gameDataManager() { return getSingleton(GameDataManager) }
 
     gameController: Controller<any> = null
 

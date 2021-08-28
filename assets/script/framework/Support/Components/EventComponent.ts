@@ -1,3 +1,4 @@
+import { Message } from "../Service/Codec/Codec";
 import { Service } from "../Service/Service"
 /**@description 这个地方做下特殊处理，防止外面的人进行修改 */
 const addListeners = Symbol("addListeners");
@@ -56,13 +57,13 @@ export class EventComponent extends cc.Component {
 
 
 
-    addNetEvent(evtName: string, func: fn, handlerType?: any, isQueue: boolean = false) {
+    addNetEvent(evtName: string, func: fn, handlerType?: typeof Message, isQueue: boolean = false) {
         //普通消息
         if (this._service) {
             this._service.addListener(
                 evtName,
                 handlerType,
-                func as any,
+                func,
                 isQueue,
                 this
             );

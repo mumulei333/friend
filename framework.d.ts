@@ -1,8 +1,3 @@
-declare class Buffer extends Uint8Array { }
-
-
-
-
 declare module cc {
     function dump(...args);
     //相当于console.info //引擎已经设置为只读，没办法在取一个一样的名字
@@ -26,6 +21,11 @@ declare module cc {
      * */
     export function updateAlignment(node: cc.Node): void;
 }
+declare type WebSocketType = "ws" | "wss"
+declare function log(...args: any[]): void;
+declare function error(...args: any[]): void;
+declare function warn(...args: any[]): void;
+
 declare namespace types {
     type EventCallBack = ((data: any) => void) | string
 
@@ -92,6 +92,7 @@ class FrameworkManager {
     readonly netManager: import("./assets/script/Common/Manager/NetManager").NetManager
     readonly logicManager: import("./assets/script/Common/Manager/LogicManager").LogicManager
     readonly bundleManager: import("./assets/script/Common/Manager/BundleManager").BundleManager
+    readonly gameDataManager: import("./assets/script/Common/Manager/GameDataManager").GameDataManager
     gameController: any
 
     /**
@@ -167,6 +168,10 @@ declare namespace Socket {
         isQueue: boolean,//是否进入消息队列，如果不是，收到网络消息返回，会立即回调处理函数
         data?: any, //解包后的数据
         target?: any, //处理者
+    }
+
+    interface IMessage {
+        readonly Data: any
     }
 }
 

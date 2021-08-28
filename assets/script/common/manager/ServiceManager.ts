@@ -1,5 +1,6 @@
 import { ICommonService } from "../../framework/Support/Service/ICommonService";
 import { PinusGameService } from "../../src/Net/Pinus/PinusGameService";
+import { EchoService } from "../../src/Net/websocketTest/websocket";
 import { GameConfig } from "../Config/GameConfig";
 import { LogicEvent } from "../Event/LogicEvent";
 
@@ -17,7 +18,7 @@ export class ServiceManager implements GameEventInterface {
      * */
     onLoad() {
         //可根据自己项目需要，添加多个service ,添加时必须从优先级 高->低 添加
-        this.addService(PinusGameService.instance, 3)
+        this.addService(EchoService.instance, 3)
         // this.services.push(PinusGameService.instance, 3)
 
         // PinusGameService.instance.priority = 3

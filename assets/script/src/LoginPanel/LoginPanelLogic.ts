@@ -6,6 +6,7 @@ import { HotUpdate, AssetManagerCode, AssetManagerState } from "../../Common/Sup
 import { ViewZOrder, GameLayer } from "../../framework/Config/Config";
 import { BUNDLE_RESOURCES } from "../../framework/Support/AssetManager/Defined";
 import { PinusGameService } from "../Net/Pinus/PinusGameService";
+import { EchoService } from "../Net/websocketTest/websocket";
 import LoginView from "./View/LoginView";
 
 class LoginPanelLogic extends Logic {
@@ -13,9 +14,9 @@ class LoginPanelLogic extends Logic {
 
     get bundle() { return BUNDLE_RESOURCES }
 
-    protected bindingEvents() {
-        super.bindingEvents()
-        this.registerEvent(LogicEvent.ENTER_LOGIN, this.onEnterComplete)
+    protected bindUIEvent() {
+        super.bindUIEvent()
+        this.addUIEvent(LogicEvent.ENTER_LOGIN, this.onEnterComplete)
     }
 
     onLoad() {
@@ -74,7 +75,7 @@ class LoginPanelLogic extends Logic {
     public onEnterComplete(data: LogicEventData) {
         super.onEnterComplete(data);
         if (data.type == this.logicType) {
-            PinusGameService.instance.connect()
+            EchoService.instance.connect()
             // Manager.serviceManager.onLoad()
             // PinusGameService.instance.connect()
             //进入到登录，关闭掉所有网络连接，请求登录成功后才连接网络

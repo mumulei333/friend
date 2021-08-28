@@ -1,5 +1,4 @@
-import { MessageHeader } from '../Support/Service/Message/BaseMessage/MessageHeader';
-import { Loading } from "../../Common/Component/Loading";
+import { Codec } from "../Support/Service/Codec/Codec";
 import { Service } from "../Support/Service/Service";
 
 export function setServiceByClassName(name: string) {
@@ -34,15 +33,15 @@ export function setService(service: Service) {
     }
 }
 
-export function setServiceMessageHeader(header: typeof MessageHeader) {
+export function setServiceCodec(header: typeof Codec) {
     return function (target: any) {
         let __load = target.prototype.onLoad
         target.prototype.onLoad = function () {
             if (CC_DEBUG) {
-                cc.log(`[setServiceMessageHeader] ${cc.js.getClassName(this)} onLoad`)
+                cc.log(`[setServiceCodec] ${cc.js.getClassName(this)} onLoad`)
             }
             if (this._service) {
-                this._service.messageHeader = header
+                this._service.Codec = header
             }
 
             __load && __load.call(this)
