@@ -1,0 +1,15 @@
+{
+    "packageUrl": "http://192.168.3.151/hotupdate",
+    "forceIncludeAllGameToApk": false,
+    "version": "1.0.0",
+    "description": "主包,其实只包含了登录界面，该字段只是做说明使用，无实际意义，注意版本号必须>=1",
+    "bundles": [
+        {
+            "id": "1",
+            "name": "瞄准线",
+            "dir": "gameOne",
+            "version": "1.0.0",
+            "includeApk": false
+        }
+    ]
+}

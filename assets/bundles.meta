@@ -1,12 +1,12 @@
 {
-  "ver": "1.1.0",
-  "importer": "directory",
-  "imported": true,
-  "uuid": "7614769c-dcb3-4719-be0f-2b3866f3cb1a",
-  "files": [],
-  "subMetas": {},
-  "userData": {
-    "compressionType": {},
-    "isRemoteBundle": {}
-  }
+  "ver": "1.1.2",
+  "uuid": "8fcba1c7-fb74-4b38-9307-c122c97c6577",
+  "isBundle": false,
+  "bundleName": "testGameBundle",
+  "priority": 1,
+  "compressionType": {},
+  "optimizeHotUpdate": {},
+  "inlineSpriteFrames": {},
+  "isRemoteBundle": {},
+  "subMetas": {}
 }

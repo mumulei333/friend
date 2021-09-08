@@ -1,0 +1,9 @@
+{
+    "entryPoints": [
+        "assets/script"
+    ],
+    "exclude": [
+        "packages/**/*.ts"
+    ],
+    "out": "docs"
+}
