@@ -6,7 +6,7 @@ import { ServerConnector } from "./ServerConnector";
 
 export abstract class Service extends ServerConnector {
     private _Process: Process = new Process()
-    public set Process(val: typeof Process) {
+    public setProcess(val: typeof Process) {
         if (val == null) { return }
         this._Process = new val
     }

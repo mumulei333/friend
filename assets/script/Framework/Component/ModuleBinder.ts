@@ -1,14 +1,23 @@
-import { IDestroy } from "../Defineds/Interfaces/IDestroy";
+import { IBinder } from "../Defineds/Interfaces/IBinder";
+import { IService } from "../Defineds/Interfaces/IService";
 import { EventManager } from "../Support/Event/EventManager"
 
-export class ModuleBinder implements IDestroy {
+export class ModuleBinder implements IBinder {
+    private _service: IService = null
+    get service(): IService { return this._service }
+
 
     protected node: cc.Node = null
     protected moduleNode: cc.Node = null
-    protected _binders: IDestroy[] = []
+    protected _binders: IBinder[] = []
 
 
     public constructor() { this.initialize() }
+
+    protected excutFunc(funName: string, ...args: any[]): void {
+        let fun: Function = this[funName]
+        if (fun != null) { fun.apply(this, args) }
+    }
 
     public initialize(): void { }
 
@@ -27,7 +36,8 @@ export class ModuleBinder implements IDestroy {
 
     protected clearViews() { }
     protected removeEvents() { EventManager.removeEvent(this) }
-    public update(data: any) { }
+
+    public updateBinder(data: any) { }
 
     destroy() {
         this.removeEvents()
@@ -37,7 +47,7 @@ export class ModuleBinder implements IDestroy {
         this.node = null
     }
 
-    protected addBinder(binder: IDestroy) {
+    protected addBinder(binder: IBinder) {
         if (this._binders.indexOf(binder) == -1) {
             this._binders.push(binder)
         }
@@ -54,4 +64,13 @@ export class ModuleBinder implements IDestroy {
         childs.forEach(s => n = n.getChildByName(s))
         return n
     }
+
+    protected getComByPath<T extends cc.Component>(com: { prototype: T }, childPath: string): T {
+        let childs: string[] = childPath.split("/")
+        let n: cc.Node = this.node
+        for (let i: number = 0; i < childs.length; i++) { n = n.getChildByName(childs[i]) }
+        return n.getComponent(com)
+    }
+
+    public update(dt: number) { }
 }

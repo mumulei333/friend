@@ -12,9 +12,11 @@ export class GameOneGameEntry extends GameEntry {
     }
 
     protected initViews() {
-        manager.eventManager.dispatchEventWith(GameOneEvents.OPEN_GAMEONE_MODULE)
+        dispatchEventWith(GameOneEvents.OPEN_GAMEONE_MODULE)
     }
 
-    protected closeViews() {
+    protected close() {
+        super.close()
+        this.closeViews()
     }
 }

@@ -1,14 +1,23 @@
 import { IModuleConfig } from "../../Defineds/Interfaces/IModuleConfig";
+import { IService } from "../../Defineds/Interfaces/IService";
 import { EventManager } from "../Event/EventManager";
+import { ModuleEvent } from "../Event/ModuleEvent";
 import { ModuleManager } from "../Module/ModuleManager";
 
 export class GameEntry {
+    private _service: IService = null
+    get service() { return this._service }
+
+
     private _bundle: string = ""
     protected bundle() { return this._bundle }
 
     private _isRun: boolean = false
 
     private _events: { [key: string]: string[] } = {}
+
+    private _modules: string[] = []
+    protected get modules() { return this._modules }
 
     protected addModule(opt: IModuleConfig, moduleName?: string, ...events: string[]) {
         if (opt.bundle == null || opt.bundle == "") { opt.bundle = this.bundle() }
@@ -19,6 +28,10 @@ export class GameEntry {
 
     private _addModule(opt: IModuleConfig, events: string[]) {
         let mName = opt.moduleName
+        if (this._modules == null) { this._modules = [] }
+        if (this._modules.indexOf(mName) == -1) {
+            this._modules.push(mName)
+        }
         ModuleManager.addModuleOpt(opt)
         for (let i = 0; i < events.length; i++) {
             if (this._events[events[i]] == null) {
@@ -60,7 +73,14 @@ export class GameEntry {
     protected removeEvents() { EventManager.removeEvent(this) }
 
     /** gameEntry退出时需要关闭的窗口 */
-    protected closeViews() { }
+    protected close() { }
+
+    protected closeViews() {
+        while (this.modules.length > 0) {
+            let mName = this._modules.shift()
+            dispatchModuleEvent(ModuleEvent.CLOSE_MODULE, mName)
+        }
+    }
 
     public runGameEntry() {
         if (this._isRun) { return }
@@ -74,7 +94,7 @@ export class GameEntry {
         if (!this._isRun) { return }
         this._isRun = false
         this.removeEvents()
-        this.closeViews()
+        this.close()
     }
 }
 

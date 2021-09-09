@@ -109,7 +109,7 @@ export class ServerConnector {
      * @param port 
      * @param protocol 协议类型 ws / wss 
      */
-    public connect_server(ip: string, port: number | string = null, protocol: WebSocketType = "ws") {
+    protected connect_server(ip: string, port: number | string = null, protocol: WebSocketType = "ws") {
         if (!this.enabled) {
             if (CC_DEBUG) cc.warn(`请求先启用`)
             return;

@@ -4,6 +4,7 @@ import { VersionManager } from "./Common/Managers/PackageVersion/VersionManager"
 import { EUIManager } from "./Framework/Defineds/Events/EUIManager";
 import { Framework } from "./Framework/Framework";
 import { EventOption } from "./Framework/Support/Event/EventOption";
+import { bindService, ClassName, RegisterEntry } from "./Framework/Decorator/Decorator";
 
 
 /**
@@ -27,10 +28,8 @@ export class Application extends Framework {
     private _showLoadingProgess(process: EventOption) { this.processLoading.show(process.data.progress + "%") }
 
 }
+function initWinodowObject() {
 
-(() => {
-    if (CC_EDITOR) { return }
-    window["manager"] = new Application()
     window["dispatchEventWith"] = (type: string, data?: any) => {
         manager.eventManager.dispatchEventWith(type, data)
     }
@@ -42,5 +41,13 @@ export class Application extends Framework {
     window["addEvent"] = (obj: any, type: string, fun: Function) => {
         manager.eventManager.addEvent(obj, type, fun)
     }
+
+
+}
+
+(() => {
+    if (CC_EDITOR) { return }
+    window["manager"] = new Application()
+    initWinodowObject()
     manager.init()
 })()

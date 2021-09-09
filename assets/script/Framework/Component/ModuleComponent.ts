@@ -1,14 +1,17 @@
-import { IDestroy } from "../Defineds/Interfaces/IDestroy";
+import { IBinder } from "../Defineds/Interfaces/IBinder";
 import { IResource } from "../Defineds/Interfaces/IResource";
-import { UIManager } from "../Support/UIView/UIManager";
+import { IService } from "../Defineds/Interfaces/IService";
 import EventComponent from "./EventComponent";
 import { ModuleBinder } from "./ModuleBinder";
 
 export abstract class ModuleComponent extends EventComponent {
+    private _service: IService = null
+    get service() { return this._service }
+
 
     protected maskClose: boolean = true
 
-    protected _destroyBinders: Array<IDestroy> = []
+    protected _binders: { [key: string]: IBinder } = {}
 
     protected enabledMaskClose() { this.maskClose = true }
     protected disableMaskClose() { this.maskClose = false }
@@ -20,10 +23,6 @@ export abstract class ModuleComponent extends EventComponent {
     public set bundle(value) { this._bundle = value }
     public get bundle() { return this._bundle }
 
-    private _uiManager: UIManager = UIManager.Instance
-
-    protected get openView() { return this._uiManager.openView }
-
     /**@description prefab路径基于 UIManager.open 传入的Bundle */
     static getPrefabUrl() { return "" }
 
@@ -32,19 +31,47 @@ export abstract class ModuleComponent extends EventComponent {
     abstract hide(option: ModuleHideOption)
 
 
-    protected addBinder(binder: IDestroy): void {
-        if (binder instanceof ModuleBinder) {
-            binder['moduleNode'] = this.node
-        }
-        if (this._destroyBinders.indexOf(binder) == -1) {
-            this._destroyBinders.push(binder)
+    protected addBinder(binder: IBinder): void {
+        if (binder instanceof ModuleBinder) { binder['moduleNode'] = this.node }
+        let binderName = cc.js.getClassName(binder)
+        if (!this._binders[binderName]) {
+            this._binders[binderName] = binder
         }
     }
 
+    /** 被关闭时移除所有注册的Binder */
     protected destroyBinders() {
-        while (this._destroyBinders.length > 0) {
-            this._destroyBinders.shift().destroy()
+        for (let key in this._binders) {
+            this._binders[key].destroy()
         }
+        this._binders = {}
+    }
+
+    /**
+     * 
+     * @param binder  参数为NULL 执行Module下所有Binder内的方法
+     * @param funcName 要执行的方法
+     * @param args 参数
+     * @returns 
+     */
+    protected excutBinderFunc(binder: ModuleBinder | string | null, funcName: string, ...args) {
+        args.unshift(funcName)
+        if (binder != null) {
+            let name = ""
+            if (binder instanceof ModuleBinder) { name = cc.js.getClassName(binder) }
+            else { name = binder }
+            let b = this._binders[name]
+            if (!b) { return }
+            let fun: Function = b["excutFunc"]
+            if (fun) { fun.apply(b, args) }
+        } else {
+            for (let key in this._binders) {
+                let b = this._binders[key]
+                let fun: Function = b["excutFunc"]
+                if (fun) { fun.apply(b, args) }
+            }
+        }
+
     }
 
     protected getComByPath<T extends cc.Component>(com: { prototype: T }, childPath: string): T {
@@ -61,9 +88,15 @@ export abstract class ModuleComponent extends EventComponent {
         return n
     }
 
-    public excuteModuleFun(funName: string, ...args) {
+    protected excuteModuleFun(funName: string, ...args) {
         let fun: Function = this[funName]
         if (fun != null) { fun.apply(this, args) }
+    }
+
+    update(dt) {
+        for (let key in this._binders) {
+            this._binders[key].update(dt)
+        }
     }
 
     onDestroy() {

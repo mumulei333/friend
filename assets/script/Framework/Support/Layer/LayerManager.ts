@@ -1,5 +1,5 @@
 import { Macro } from "../../Config/Macro";
-import { Layer } from "../../Defineds/Enums/Layer";
+import { LayerEnum } from "../../Defineds/Enums/LayerEnum";
 
 export class LayerManager {
     private static _instance: LayerManager = null!;
@@ -15,8 +15,8 @@ export class LayerManager {
         this._layers.length = 0
         let parentNode = cc.director.getScene()?.getChildByName("Canvas")!
         let size = cc.view.getCanvasSize()
-        for (let i = 0; i < Layer.GameLayerNames.length; i++) {
-            let node: cc.Node = parentNode.getChildByName(Layer.GameLayerNames[i]) as any
+        for (let i = 0; i < LayerEnum.GameLayerNames.length; i++) {
+            let node: cc.Node = parentNode.getChildByName(LayerEnum.GameLayerNames[i]) as any
             if (node == null) {
                 node = new cc.Node()
                 node.setContentSize(size)
@@ -24,7 +24,7 @@ export class LayerManager {
                 this._addWidget(node)
                 // Manager.resolutionHelper.fullScreenAdapt(node);
             }
-            node.name = Layer.GameLayerNames[i]
+            node.name = LayerEnum.GameLayerNames[i]
             this._layers.push(node)
         }
     }
@@ -43,7 +43,7 @@ export class LayerManager {
         }
     }
 
-    public getLayer(layerIndex: Layer.GameLayer): cc.Node | null {
+    public getLayer(layerIndex: LayerEnum.GameLayer): cc.Node | null {
         if (Macro.EnableLayerManager) {
             return this._layers[layerIndex]
         } else {

@@ -76,7 +76,8 @@ export class EntryManager {
         if (this._exclude.indexOf(entryName) == -1) {
             this._gameEntrys[entryName].exitGameEntry()
         }
-        if (bundle == "") { return }
+        /** 主包bundle不允许被卸载 */
+        if (bundle == "" || bundle == "resources") { return }
         AssetsManager.Instance.removeBundle(bundle)
     }
 }

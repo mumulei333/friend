@@ -1,5 +1,7 @@
 import { EntryManager } from "../Support/Entry/EntryManager";
 import { GameEntry } from "../Support/Entry/GameEntry";
+import { ServiceManager } from "../Support/NetWork/Manager/ServiceManager";
+import { ICommonService } from "../Support/NetWork/Socket/ICommonService";
 
 
 /** 
@@ -25,3 +27,26 @@ export function RegisterEntry(bundle: string = "resources") {
         }
     }
 }
+
+export function registerService() {
+    return function (target: new () => ICommonService) {
+        if (target instanceof ICommonService) {
+            ServiceManager.Instance.register(target)
+        }
+    }
+}
+
+export function bindService(service: string | ICommonService) {
+    return function (target: new () => IServerClass) {
+        if (target["_service"] == null) {
+            let name = ""
+            if (service instanceof ICommonService) {
+                name = cc.js.getClassName(ICommonService)
+            } else { name = service }
+            //@ts-ignore
+            target["_service"] = ServiceManager.Instance.get(name)
+        }
+
+    }
+}
+

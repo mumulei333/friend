@@ -1,5 +1,5 @@
 import { Macro } from "../../Framework/Config/Macro";
-import { Layer } from "../../Framework/Defineds/Enums/Layer";
+import { LayerEnum } from "../../Framework/Defineds/Enums/LayerEnum";
 import Stack from "../../Libs/Stack";
 import { Config } from "../Config/Config";
 import PopupModule from "./PopupModule";
@@ -69,7 +69,7 @@ export class PopupControll {
         let finish = await this.loadPrefab()
         if (finish) {
             this._node = cc.instantiate(this._prefab)
-            manager.uiManager.addChild(this._node, Layer.GameLayer.Mask, 0,)
+            manager.uiManager.addChild(this._node, LayerEnum.GameLayer.Mask, 0,)
             this._node.active = false
 
             let btn = cc.find("single_color", this._node)

@@ -9,7 +9,7 @@ export default class Main extends cc.Component {
         manager.processLoading.preloadPrefab()
         manager.enteyManager.startGameEntry("MainGameEntry")
         manager.enteyManager.addExclude("MainGameEntry")
-        manager.eventManager.dispatchModuleEvent(ModuleEvent.SHOW_MODULE, MainEvents.BOOT_MODULE)
+        dispatchModuleEvent(ModuleEvent.SHOW_MODULE, MainEvents.BOOT_MODULE)
     }
 
 

@@ -2,7 +2,7 @@ import { AssetsManager } from "../Assets/AssetsManager";
 import { EUIManager } from "./../../Defineds/Events/EUIManager";
 import { EventManager } from "./../Event/EventManager";
 import { ModuleComponent } from "../../Component/ModuleComponent";
-import { Layer } from "../../Defineds/Enums/Layer";
+import { LayerEnum } from "../../Defineds/Enums/LayerEnum";
 import { ModuleStatusEnum } from "../../Defineds/Enums/ModuleStatusEnum";
 import { IHideModuleOption, IShowModuleOption } from "../../Defineds/Interfaces/IModuleOption";
 import { IResource } from "../../Defineds/Interfaces/IResource";
@@ -27,7 +27,7 @@ export class UIManager {
 
     public openView(opt: IShowModuleOption): Promise<ModuleComponent> {
         if (opt.ModuelConfig.bundle == null || opt.ModuelConfig.bundle == "") { opt.ModuelConfig.bundle = "resources" }
-        if (opt.ModuelConfig.layer == null) { opt.ModuelConfig.layer = Layer.GameLayer.Content }
+        if (opt.ModuelConfig.layer == null) { opt.ModuelConfig.layer = LayerEnum.GameLayer.Content }
         if (opt.ModuelConfig.zIndex == null) { opt.ModuelConfig.layer = 0 }
         return this._open(opt.ModuelConfig.component, opt, false)
     }

@@ -1,6 +1,6 @@
 //带进度显示的Loading
 
-import { Layer } from "../../Framework/Defineds/Enums/Layer";
+import { LayerEnum } from "../../Framework/Defineds/Enums/LayerEnum";
 
 export class ProcessLoading {
     private static _instance: ProcessLoading = null!;
@@ -40,7 +40,7 @@ export class ProcessLoading {
     private _initView() {
         if (this._prefab == null) { return }
         this._node = cc.instantiate(this._prefab)
-        manager.uiManager.addChild(this._node, Layer.GameLayer.UILoading, 0)
+        manager.uiManager.addChild(this._node, LayerEnum.GameLayer.UILoading, 0)
         this._node.active = false
 
         this._loop = cc.find("content/icon", this._node)
