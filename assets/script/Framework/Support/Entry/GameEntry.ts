@@ -1,11 +1,11 @@
 import { IModuleConfig } from "../../Defineds/Interfaces/IModuleConfig";
-import { IService } from "../../Defineds/Interfaces/IService";
+import { IReceive } from "../../Defineds/Interfaces/IService";
 import { EventManager } from "../Event/EventManager";
 import { ModuleEvent } from "../Event/ModuleEvent";
 import { ModuleManager } from "../Module/ModuleManager";
 
 export class GameEntry {
-    private _service: IService = null
+    private _service: IReceive = null
     get service() { return this._service }
 
 

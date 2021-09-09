@@ -1,4 +1,5 @@
 import { ModuleComponent } from "./Component/ModuleComponent"
+import { getClassName } from "./Extentions/getClassName"
 import { AssetsManager } from "./Support/Assets/AssetsManager"
 import { CacheManager } from "./Support/Assets/CacheManager"
 import { BundleManager } from "./Support/Bundler/BundleManager"
@@ -54,7 +55,7 @@ export class Framework {
         if (!this.moduleManager.hasModule(dat.moduleName)) { return }
         let m = this.moduleManager.getModule(dat.moduleName)
         this.moduleManager.removeModule(dat.moduleName)
-        let name = cc.js.getClassName(m)
+        let name = getClassName(m)
         this.uiManager.close(name)
     }
 

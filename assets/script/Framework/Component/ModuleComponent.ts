@@ -1,8 +1,11 @@
+import { bindService } from "../Decorator/Decorator";
 import { IBinder } from "../Defineds/Interfaces/IBinder";
 import { IResource } from "../Defineds/Interfaces/IResource";
 import { IService } from "../Defineds/Interfaces/IService";
+import { getClassName } from "../Extentions/getClassName";
 import EventComponent from "./EventComponent";
 import { ModuleBinder } from "./ModuleBinder";
+
 
 export abstract class ModuleComponent extends EventComponent {
     private _service: IService = null
@@ -33,7 +36,7 @@ export abstract class ModuleComponent extends EventComponent {
 
     protected addBinder(binder: IBinder): void {
         if (binder instanceof ModuleBinder) { binder['moduleNode'] = this.node }
-        let binderName = cc.js.getClassName(binder)
+        let binderName = getClassName(binder)
         if (!this._binders[binderName]) {
             this._binders[binderName] = binder
         }
@@ -58,7 +61,7 @@ export abstract class ModuleComponent extends EventComponent {
         args.unshift(funcName)
         if (binder != null) {
             let name = ""
-            if (binder instanceof ModuleBinder) { name = cc.js.getClassName(binder) }
+            if (binder instanceof ModuleBinder) { name = getClassName(binder) }
             else { name = binder }
             let b = this._binders[name]
             if (!b) { return }

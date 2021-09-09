@@ -1,3 +1,4 @@
+import { getClassName } from "../../../Extentions/getClassName";
 import { ICommonService } from "../Socket/ICommonService";
 
 
@@ -54,7 +55,7 @@ export class ServiceManager {
     private _getServiceName(service: (new () => ICommonService) | string): string {
         let name = ""
         if (service instanceof ICommonService) {
-            name = cc.js.getClassName(service)
+            name = getClassName(service)
         } else { name = service as unknown as string }
         return name
     }

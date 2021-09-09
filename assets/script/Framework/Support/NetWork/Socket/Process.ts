@@ -1,7 +1,8 @@
-import { IListenerData } from "../../../Defineds/Interfaces/IListenerData";
-import { Codec, Message } from "../../../Defineds/Interfaces/IMessage";
+import { IListenerData } from "../../../Defineds/Interfaces/IListenerData"
+import { Codec, Message } from "../../../Defineds/Interfaces/IMessage"
+import { ProtoManager } from "../../Proto/ProtoManager"
 
-export type MessageHandleFunc = (handleTypeData: any) => number;
+export type MessageHandleFunc = (handleTypeData: any) => number
 
 export class Process {
     public Codec: new () => Codec = null//DefaultCodec;
@@ -100,7 +101,7 @@ export class Process {
         this._isDoingMessage = false;
     }
 
-    public addListener(eventName: string, handleType: any, handleFunc: MessageHandleFunc, isQueue: boolean, target: any) {
+    public addListener(eventName: string, handleFunc: MessageHandleFunc, isQueue: boolean, target: any) {
         let key = eventName;
 
         if (this._listeners[key]) {
@@ -117,7 +118,6 @@ export class Process {
             this._listeners[key].push({
                 eventName: eventName,
                 func: handleFunc,
-                type: handleType,
                 isQueue: isQueue,
                 target: target
             });
@@ -127,7 +127,6 @@ export class Process {
             this._listeners[key].push({
                 eventName: eventName,
                 func: handleFunc,
-                type: handleType,
                 isQueue: isQueue,
                 target: target
             });
@@ -200,9 +199,10 @@ export class Process {
     }
 
     protected decode(o: IListenerData, header: Codec): Message | null {
-        let obj: Message = null!;
-        if (o.type) {
-            obj = new o.type();
+        let obj: Message = null;
+        let proto = ProtoManager.Instance.getProto(o.eventName)
+        if (proto) {
+            obj = new proto();
             //解包
             obj.decode(header.getData());
         } else {
@@ -249,7 +249,6 @@ export class Process {
      */
     private copyListenerData(input: IListenerData, data: any): IListenerData {
         return {
-            type: input.type,
             func: input.func,
             isQueue: input.isQueue,
             data: data,

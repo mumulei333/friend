@@ -10,6 +10,7 @@ import { IUIClass } from "../../Defineds/Interfaces/IUIClass";
 import { LayerManager } from "../Layer/LayerManager";
 import { BUNDLE_RESOURCES } from "./Const";
 import { ModuleData } from "./ModuleData";
+import { getClassName } from "../../Extentions/getClassName";
 
 export class UIManager {
     private _logtag: string = "UIManager"
@@ -38,7 +39,7 @@ export class UIManager {
                 if (CC_DEBUG) cc.log(`[${this._logtag}]`, 'open ui class error');
                 return reslove(null);
             }
-            let className = cc.js.getClassName(module)
+            let className = getClassName(module)
             let moduleData = this.getViewData(module)
             if (moduleData) {
                 moduleData.isPreload = isPreload
@@ -287,7 +288,7 @@ export class UIManager {
         if (typeof data == "string") {
             className = data
         } else {
-            className = cc.js.getClassName(data)
+            className = getClassName(data)
         }
         return className
     }

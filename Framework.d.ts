@@ -8,6 +8,7 @@ function dispatchModuleEvent(type: string, moduleName: string, param?: { onHided
 function addEvent(obj: any, type: string, fun: Function)
 
 type IService = import("./assets/script/Framework/Defineds/Interfaces/IService").IService
+type IReceive = import("./assets/script/Framework/Defineds/Interfaces/IService").IReceive
 interface IServerClass {
-    readonly service: IService
+    readonly service: IService | IReceive
 }

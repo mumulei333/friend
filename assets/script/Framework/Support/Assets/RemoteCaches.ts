@@ -1,4 +1,5 @@
 import { IResource } from "../../Defineds/Interfaces/IResource"
+import { getClassName } from "../../Extentions/getClassName";
 
 class CacheInfo {
     refCount = 0;
@@ -144,7 +145,7 @@ export class RemoteCaches {
         let content = []
         let invalidContent = []
         this._spriteFrameCaches.forEach((data, key, source) => {
-            let itemContent = { url: data.info.url, isLoaded: data.isLoaded, isValid: cc.isValid(data.data), assetType: cc.js.getClassName(data.info.type), data: data.data ? cc.js.getClassName(data.data) : null, status: data.status }
+            let itemContent = { url: data.info.url, isLoaded: data.isLoaded, isValid: cc.isValid(data.data), assetType: getClassName(data.info.type), data: data.data ? getClassName(data.data) : null, status: data.status }
             let item = { url: key, data: itemContent }
             if (data.isLoaded && ((data.data && !cc.isValid(data.data)) || !data.data)) {
                 invalidContent.push(item)
@@ -164,7 +165,7 @@ export class RemoteCaches {
         content = [];
         invalidContent = [];
         this._caches.forEach((data, key, source) => {
-            let itemContent = { url: data.info.url, isLoaded: data.isLoaded, isValid: cc.isValid(data.data), assetType: cc.js.getClassName(data.info.type), data: data.data ? cc.js.getClassName(data.data) : null, status: data.status }
+            let itemContent = { url: data.info.url, isLoaded: data.isLoaded, isValid: cc.isValid(data.data), assetType: getClassName(data.info.type), data: data.data ? getClassName(data.data) : null, status: data.status }
             let item = { url: key, data: itemContent }
             if (data.isLoaded && data.data && !cc.isValid(data.data)) {
                 invalidContent.push(item)

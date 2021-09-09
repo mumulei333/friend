@@ -1,4 +1,5 @@
 import { IResource } from "../../Defineds/Interfaces/IResource";
+import { getClassName } from "../../Extentions/getClassName";
 
 export class ResourceCache {
     print() {
@@ -9,8 +10,8 @@ export class ResourceCache {
                 url: data.info.url,
                 isLoaded: data.isLoaded,
                 isValid: cc.isValid(data.data),
-                assetType: cc.js.getClassName(data.info.type),
-                data: data.data ? cc.js.getClassName(data.data) : null,
+                assetType: getClassName(data.info.type),
+                data: data.data ? getClassName(data.data) : null,
                 status: data.status
             }
             let item = { url: key, data: itemContent };

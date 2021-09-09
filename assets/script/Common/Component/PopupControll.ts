@@ -1,5 +1,6 @@
 import { Macro } from "../../Framework/Config/Macro";
 import { LayerEnum } from "../../Framework/Defineds/Enums/LayerEnum";
+import { getClassName } from "../../Framework/Extentions/getClassName";
 import Stack from "../../Libs/Stack";
 import { Config } from "../Config/Config";
 import PopupModule from "./PopupModule";
@@ -110,7 +111,7 @@ export class PopupControll {
         } else {
             uiNode = this._nodeStatck.last()
             if (uiNode && uiNode.isMaskClose) {
-                manager.uiManager.close(cc.js.getClassName(uiNode))
+                manager.uiManager.close(getClassName(uiNode))
                 this._nodeStatck.pop()
                 this.isOffMask()
             }

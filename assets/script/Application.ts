@@ -4,7 +4,6 @@ import { VersionManager } from "./Common/Managers/PackageVersion/VersionManager"
 import { EUIManager } from "./Framework/Defineds/Events/EUIManager";
 import { Framework } from "./Framework/Framework";
 import { EventOption } from "./Framework/Support/Event/EventOption";
-import { bindService, ClassName, RegisterEntry } from "./Framework/Decorator/Decorator";
 
 
 /**
@@ -29,7 +28,6 @@ export class Application extends Framework {
 
 }
 function initWinodowObject() {
-
     window["dispatchEventWith"] = (type: string, data?: any) => {
         manager.eventManager.dispatchEventWith(type, data)
     }
@@ -41,8 +39,6 @@ function initWinodowObject() {
     window["addEvent"] = (obj: any, type: string, fun: Function) => {
         manager.eventManager.addEvent(obj, type, fun)
     }
-
-
 }
 
 (() => {
