@@ -7,7 +7,7 @@ export interface IService {
 
 export interface IReceive {
     connect(): void
-    addListener(eventName: string, handleType: any, handleFunc: Function, isQueue: boolean, target: any): void
+    addListener(eventName: string, handleFunc: Function, isQueue: boolean, target: any): void
     removeListeners(target: any, eventName?: string): void
     setProcess(val: Process): void
     close(): void

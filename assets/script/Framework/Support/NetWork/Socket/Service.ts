@@ -60,8 +60,8 @@ export abstract class Service extends ServerConnector {
   * @param handleFunc 处理回调
   * @param isQueue 是否进入消息队列
   */
-    public addListener(eventName: string, handleType: any, handleFunc: Function, isQueue: boolean, target: any) {
-        this._Process.addListener(eventName, handleType, handleFunc as any, isQueue, target)
+    public addListener(eventName: string, handleFunc: Function, isQueue: boolean, target: any) {
+        this._Process.addListener(eventName, handleFunc as any, isQueue, target)
     }
 
     public removeListeners(target: any, eventName?: string) {
