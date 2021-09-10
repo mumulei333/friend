@@ -1,9 +1,11 @@
-import { ClassName, RegisterEntry } from "../../../script/Framework/Decorator/Decorator";
+import { decorator } from "../../../script/Framework/Decorator/Decorator";
 import { GameEntry } from "../../../script/Framework/Support/Entry/GameEntry";
 import { GameTwoEvents } from "./Events/GameTwoEvents";
 
-@ClassName()
-@RegisterEntry("gameTwo")
+const { className, registerEntry } = decorator
+
+@className()
+@registerEntry("gameTwo")
 export class GameTwoGameEntry extends GameEntry {
     protected initEntry() {
         super.initEntry();

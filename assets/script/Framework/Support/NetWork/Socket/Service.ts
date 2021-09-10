@@ -1,5 +1,5 @@
 import { ENetEvent } from "../../../Defineds/Events/ENetEvent";
-import { Codec, Message } from "../../../Defineds/Interfaces/IMessage";
+import { AbstractCodec, AbstractSerialize } from "../../../Defineds/Interfaces/IMessage";
 import { EventManager } from "../../Event/EventManager";
 import { Process } from "./Process";
 import { ServerConnector } from "./ServerConnector";
@@ -12,15 +12,15 @@ export abstract class Service extends ServerConnector {
     }
 
     /**@description 数据流消息包头定义类型 */
-    public set Codec(value: new () => Codec) { this._Process.Codec = value }
+    public set Codec(value: new () => AbstractCodec) { this._Process.Codec = value }
     // protected get messageHeader() { return this._messageHeader }
 
-    private _Heartbeat: new () => Message = null;
+    private _Heartbeat: new () => AbstractSerialize = null;
     /**@description 心跳的消息定义类型 */
-    public get heartbeat(): new () => Message { return this._Heartbeat }
-    public set heartbeat(value: new () => Message) { this._Heartbeat = value }
+    public get heartbeat(): new () => AbstractSerialize { return this._Heartbeat }
+    public set heartbeat(value: new () => AbstractSerialize) { this._Heartbeat = value }
 
-    public serviceName = "CommonService";
+    public serviceName = "Service";
     /**@description 值越大，优先级越高 */
     public priority: number = 0;
 
@@ -100,9 +100,9 @@ export abstract class Service extends ServerConnector {
 
 
 
-    public send(msg: Message) {
+    public send(msg: AbstractSerialize) {
         if (this._Process.Codec) {
-            if (msg.encode()) {
+            if (msg.Serialize()) {
                 let header = new this._Process.Codec
                 header.pack(msg)
                 if (this.isHeartBeat(msg)) {

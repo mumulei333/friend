@@ -1,4 +1,4 @@
-import { Message } from "./IMessage";
+import { AbstractSerialize } from "./IMessage";
 
 export type THandleFunc = (handleTypeData: any) => number;
 export interface IListenerData {

@@ -1,11 +1,11 @@
 import { IListenerData } from "../../../Defineds/Interfaces/IListenerData"
-import { Codec, Message } from "../../../Defineds/Interfaces/IMessage"
+import { AbstractCodec, AbstractSerialize } from "../../../Defineds/Interfaces/IMessage"
 import { ProtoManager } from "../../Proto/ProtoManager"
 
 export type MessageHandleFunc = (handleTypeData: any) => number
 
 export class Process {
-    public Codec: new () => Codec = null//DefaultCodec;
+    public Codec: new () => AbstractCodec = null//DefaultCodec;
 
     /** 监听集合*/
     protected _listeners: { [key: string]: IListenerData[] } = {};
@@ -72,7 +72,7 @@ export class Process {
         }
     }
 
-    public onMessage(code: Codec) {
+    public onMessage(code: AbstractCodec) {
         cc.log(`recv data main cmd : ${code.getCmdID()}`);
         let key = code.getCmdID();
         if (!this._listeners[key]) {
@@ -198,13 +198,13 @@ export class Process {
         }
     }
 
-    protected decode(o: IListenerData, header: Codec): Message | null {
-        let obj: Message = null;
+    protected decode(o: IListenerData, header: AbstractCodec): AbstractSerialize | null {
+        let obj: AbstractSerialize = null;
         let proto = ProtoManager.Instance.getProto(o.eventName)
         if (proto) {
             obj = new proto();
             //解包
-            obj.decode(header.getData());
+            obj.Deserialize(header.getData());
         } else {
             //把数据放到里面，让后面使用都自己解析
             obj = header.getData();
@@ -218,9 +218,9 @@ export class Process {
         let queueDatas = [];
 
         for (let i = 0; i < listenerDatas.length; i++) {
-            let obj: Message = data
+            let obj: AbstractSerialize = data
             if (encode) {
-                obj = this.decode(listenerDatas[i], data) as Message
+                obj = this.decode(listenerDatas[i], data) as AbstractSerialize
             }
 
             if (listenerDatas[i].isQueue) {

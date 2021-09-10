@@ -1,10 +1,9 @@
-import { ClassName, RegisterEntry } from "../Framework/Decorator/Decorator";
+import { decorator } from "../Framework/Decorator/Decorator";
 import { GameEntry } from "../Framework/Support/Entry/GameEntry";
 import { MainModuleConfig } from "./Configs/MainModuleConfig";
-
-@RegisterEntry()
+const { registerEntry } = decorator
+@registerEntry()
 export class MainGameEntry extends GameEntry {
-    static className = "MainGameEntry"
     protected initEntry() {
         super.initEntry();
         let { BootModule, LoginModule } = MainModuleConfig

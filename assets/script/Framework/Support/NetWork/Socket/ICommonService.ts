@@ -1,6 +1,6 @@
 import { Macro } from "../../../Config/Macro";
 import { IGameEventInterface } from "../../../Defineds/Interfaces/IGameEventInterface";
-import { Message } from "../../../Defineds/Interfaces/IMessage";
+import { AbstractSerialize } from "../../../Defineds/Interfaces/IMessage";
 import { Service } from "./Service";
 
 export abstract class ICommonService extends Service implements IGameEventInterface {
@@ -41,7 +41,7 @@ export abstract class ICommonService extends Service implements IGameEventInterf
     /**
      * @description 是否为心跳消息
      */
-    protected abstract isHeartBeat(data: Message): boolean
+    protected abstract isHeartBeat(data: AbstractSerialize): boolean
 
     protected onError(ev: Event): void {
         super.onError(ev)

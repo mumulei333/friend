@@ -1,8 +1,8 @@
 import { Process } from "../../Support/NetWork/Socket/Process";
-import { Message } from "./IMessage";
+import { AbstractSerialize } from "./IMessage";
 
 export interface IService {
-    send(msg: Message): void
+    send(msg: AbstractSerialize): void
 }
 
 export interface IReceive {

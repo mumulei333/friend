@@ -1,4 +1,4 @@
-import { Message } from "../../Defineds/Interfaces/IMessage";
+import { AbstractSerialize } from "../../Defineds/Interfaces/IMessage";
 import { getClassName } from "../../Extentions/getClassName";
 
 
@@ -7,9 +7,9 @@ export class ProtoManager {
     public static get Instance() { return this._instance || (this._instance = new ProtoManager()); }
 
 
-    private _protos: Map<string, new () => Message> = new Map()
+    private _protos: Map<string, new () => AbstractSerialize> = new Map()
 
-    public register(proto: new () => Message, cmd: string = "") {
+    public register(proto: new () => AbstractSerialize, cmd: string = "") {
         if (cmd == "" || cmd == null) { cmd = getClassName(proto) }
         if (!this._protos.has(cmd)) {
             this._protos.set(cmd, proto)

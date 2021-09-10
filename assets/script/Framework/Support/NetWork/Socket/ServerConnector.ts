@@ -1,4 +1,4 @@
-import { IMessage } from "../../../Defineds/Interfaces/IMessage";
+import { AbstractMessage } from "../../../Defineds/Interfaces/IMessage";
 import { SocketClient } from "./SocketClient";
 
 export class ServerConnector {
@@ -46,7 +46,7 @@ export class ServerConnector {
     /**
      * @description 是否为心跳消息
      */
-    protected isHeartBeat(data: IMessage): boolean { return false; }
+    protected isHeartBeat(data: AbstractMessage): boolean { return false; }
 
     /**
      * @description 网络打开
