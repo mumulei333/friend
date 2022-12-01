@@ -54,7 +54,7 @@ export default class MainController extends EventComponent {
         game.on(Game.EVENT_LOW_MEMORY,this.onLowMemory,this);
     }
 
-    update() {
+    update(dt:number) {
         Manager.update(this.node);
     }
 
