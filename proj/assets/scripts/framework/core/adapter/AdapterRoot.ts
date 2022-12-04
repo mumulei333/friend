@@ -5,7 +5,7 @@ import { view, _decorator } from "cc";
 import { DEBUG } from "cc/env";
 import { Adapter } from "./Adapter";
 
-const { ccclass, property ,executeInEditMode} = _decorator;
+const { ccclass, property ,executeInEditMode,menu} = _decorator;
 
 /**
  * 游戏主内容节点自适应所有分辨率的脚本
@@ -35,6 +35,7 @@ const { ccclass, property ,executeInEditMode} = _decorator;
  */
 @ccclass
 @executeInEditMode(true)
+@menu("Quick适配组件/AdapterRoot")
 export default class AdapterRoot extends Adapter {
 
     onLoad() {
