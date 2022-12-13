@@ -24,7 +24,7 @@ class RemoteLoader {
                 } else {
                     //错误处理
                     if (DEBUG) {
-                       if( spCache ) Log.d(this._logTag, `错误资源，删除缓存信息，重新加载:${url}`);
+                        if ( spCache ) Log.d(this._logTag, `错误资源，删除缓存信息，重新加载:${url}`);
                     }
                     Manager.cache.remoteCaches.remove(url);
                 }
