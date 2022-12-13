@@ -1,3 +1,4 @@
+import { js } from "cc";
 import OnlyEventComponent from "../../componects/OnlyEventComponent";
 import { Macro } from "../../defines/Macros";
 
@@ -29,6 +30,6 @@ export class Logic extends OnlyEventComponent {
     }
 
     debug(){
-        Log.d(`${this.module} : ${cc.js.getClassName(this)}`);
+        Log.d(`${this.module} : ${js.getClassName(this)}`);
     }
 }
