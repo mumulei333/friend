@@ -2,10 +2,10 @@
  */
 
 import { sys, v3, view, _decorator } from "cc";
-import { DEBUG, EDITOR, JSB } from "cc/env";
+import { EDITOR, JSB } from "cc/env";
 import { Adapter, SafeArea } from "./Adapter";
 
-const { ccclass, property ,executeInEditMode,menu } = _decorator;
+const { ccclass, property, executeInEditMode, menu } = _decorator;
 /**
  * 安全区域适配组件
  *
@@ -25,23 +25,7 @@ const { ccclass, property ,executeInEditMode,menu } = _decorator;
 @executeInEditMode(true)
 @menu("Quick适配组件/AdapterView")
 export default class AdapterView extends Adapter {
-    onLoad() {
-        this._onResize();
-    }
-
-    onEnable() {
-        let onResize = this._onResize.bind(this);
-        window.addEventListener("resize", onResize);
-        window.addEventListener("orientationchange", onResize);
-    }
-
-    onDisable() {
-        let onResize = this._onResize.bind(this);
-        window.removeEventListener("resize", onResize);
-        window.removeEventListener("orientationchange", onResize);
-    }
-
-    private _onResize() {
+    protected onChangeSize() {
         AdapterView.safeArea = null as any;
         if (this.node) {
 
@@ -76,7 +60,7 @@ export default class AdapterView extends Adapter {
             // 初始屏幕宽高像素
             let screenWidth = view.getCanvasSize().width;
             let screenHeight = view.getCanvasSize().height;
-            if ( EDITOR ){
+            if (EDITOR) {
                 screenWidth = view.getDesignResolutionSize().width;
                 screenHeight = view.getDesignResolutionSize().height;
             }
