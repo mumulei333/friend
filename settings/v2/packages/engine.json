@@ -14,10 +14,19 @@
       "gfx-webgl2": {
         "_value": true
       },
+      "animation": {
+        "_value": true
+      },
+      "skeletal-animation": {
+        "_value": true
+      },
       "3d": {
         "_value": false
       },
       "2d": {
+        "_value": true
+      },
+      "xr": {
         "_value": true
       },
       "ui": {
@@ -61,6 +70,15 @@
       "profiler": {
         "_value": true
       },
+      "occlusion-query": {
+        "_value": false
+      },
+      "geometry-renderer": {
+        "_value": false
+      },
+      "debug-renderer": {
+        "_value": false
+      },
       "particle-2d": {
         "_value": true
       },
@@ -87,6 +105,12 @@
       },
       "dragon-bones": {
         "_value": true
+      },
+      "marionette": {
+        "_value": true
+      },
+      "custom-pipeline": {
+        "_value": false
       }
     },
     "includeModules": [
@@ -114,6 +138,7 @@
     "noDeprecatedFeatures": {
       "value": false,
       "version": ""
-    }
+    },
+    "flags": {}
   }
 }

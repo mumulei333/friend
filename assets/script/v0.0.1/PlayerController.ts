@@ -1,12 +1,23 @@
-import { _decorator, Component, find, Node, UIRenderer, v3 } from 'cc';
+import { _decorator, Animation, Component, find, Node, UIRenderer, v3 } from 'cc';
 import { DisplacementInput } from './DisplacementInput';
 const { ccclass, property } = _decorator;
 
 @ccclass('PlayerController')
 export class PlayerController extends Component {
 
-    start() {
 
+    // 动画状态
+    state: string;
+
+    start() {
+        
+    }
+
+
+    setState(state: string) {
+        if (this.state == state) return;
+        this.state = state;
+        this.node.getComponent(Animation).play(this.state);
     }
 
 
@@ -31,11 +42,8 @@ export class PlayerController extends Component {
         let position_x =  oldPosition_x + 200 * deltaTime * DisplacementInput.Instance.horizontal;
         let position_y =  oldPosition_y + 200 * deltaTime * DisplacementInput.Instance.vertical;
 
-        // console.log(`旧坐标X: ${oldPosition_x}, 新坐标X: ${position_x}`);
-        // console.log(`旧坐标Y: ${oldPosition_y}, 新坐标Y: ${position_y}`);
-
+        this.setState(DisplacementInput.Instance.state);
         this.node.position = v3(position_x, position_y);
-        // this.goKeyWalk(position_x, position_y);
     }
 
 

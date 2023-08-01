@@ -16,6 +16,9 @@ export class DisplacementInput {
     // 垂直轴
     vertical: number = 0;
 
+    // 行走动画状态
+    state: string;
+
     static get Instance() {
         if (this.instance == null) { 
             this.instance = new DisplacementInput(); 
@@ -23,20 +26,29 @@ export class DisplacementInput {
         return this.instance; 
     }
 
+    setState(state: string) {
+        if (this.state == state) return;
+        this.state = state;
+    }
+
     constructor() {
-        // 键盘按下
+        // 键盘按下Up, down, left and right
         input.on(Input.EventType.KEY_DOWN, (event) => {
             if (event.keyCode == KeyCode.KEY_W) {
                 this.vertical = 1;
+                this.state = "hero_up";
             } else if (event.keyCode == KeyCode.KEY_S) {
                 this.vertical = -1;
+                this.state = "hero_down";
             }
 
             if (event.keyCode == KeyCode.KEY_A) {
                 this.horizontal = -1;
+                this.state = "hero_left";
                 // this.callbackTailsAnimationFun();
             } else if (event.keyCode == KeyCode.KEY_D) {
                 this.horizontal = 1;
+                this.state = "hero_right";
                 // this.callbackHeadsAnimationFun();
             }
 

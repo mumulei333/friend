@@ -1,8 +1,25 @@
 {
   "general": {
     "designResolution": {
-      "width": 480,
-      "height": 320
+      "width": 384,
+      "height": 384
+    }
+  },
+  "physics": {
+    "collisionGroups": [
+      {
+        "index": 1,
+        "name": "wall"
+      },
+      {
+        "index": 2,
+        "name": "hero"
+      }
+    ],
+    "collisionMatrix": {
+      "0": 0,
+      "1": 4,
+      "2": 2
     }
   }
 }
