@@ -772,7 +772,7 @@
       "y": 0
     },
     "_angularVelocity": 0,
-    "_fixedRotation": false,
+    "_fixedRotation": true,
     "_id": "b703Aej+VBq73vRnlinYfT"
   },
   {
@@ -797,8 +797,8 @@
     },
     "_size": {
       "__type__": "cc.Size",
-      "width": 16,
-      "height": 16
+      "width": 10,
+      "height": 10
     },
     "_id": "66g7xmOn5BCJCwHEKvdGuR"
   },
@@ -1064,7 +1064,7 @@
     "_cameraComponent": {
       "__id__": 4
     },
-    "_alignCanvasWithScreen": true,
+    "_alignCanvasWithScreen": false,
     "_id": "12O/ljcVlEqLmVm3U2gEOQ"
   },
   {

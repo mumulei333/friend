@@ -48,8 +48,8 @@ export class PlayerController extends Component {
         // this.node.position = v3(position_x, position_y);
         
         let linearVelocity = this.node.getComponent(RigidBody2D).linearVelocity;
-        linearVelocity.x = 10 * DisplacementInput.Instance.horizontal
-        linearVelocity.y = 10 * DisplacementInput.Instance.vertical
+        linearVelocity.x = 5 * DisplacementInput.Instance.horizontal
+        linearVelocity.y = 5 * DisplacementInput.Instance.vertical
 
         this.node.getComponent(RigidBody2D).linearVelocity = linearVelocity;
 
