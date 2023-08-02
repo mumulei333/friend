@@ -1,4 +1,4 @@
-import { _decorator, Animation, Component, find, Node, RigidBody2D, UIRenderer, v3 } from 'cc';
+import { _decorator, Animation, BoxCollider2D, Collider2D, Component, Contact2DType, find, IPhysics2DContact, Node, RigidBody2D, UIRenderer, v3 } from 'cc';
 import { DisplacementInput } from './DisplacementInput';
 const { ccclass, property } = _decorator;
 
@@ -9,8 +9,21 @@ export class PlayerController extends Component {
     // 动画状态
     state: string;
 
+    // 速度
+    speed: number = 5;
+
     start() {
+
+        // 主角与阻碍物平行走突然卡住问题，可以设置Collider2D.restitution回弹系数
+        let collider = this.node.getComponent(BoxCollider2D)
+        collider.on(Contact2DType.BEGIN_CONTACT, this.onBeginContact, this);
+
         
+    }
+
+    onBeginContact (selfCollider: Collider2D, otherCollider: Collider2D, contact: IPhysics2DContact | null) {
+        // 只在两个碰撞体开始接触时被调用一次
+        console.log('onBeginContact:只在两个碰撞体开始接触时被调用一次');
     }
 
 
@@ -36,41 +49,32 @@ export class PlayerController extends Component {
 
     }
 
-    keyWalkBind(deltaTime: number) {
+    keyWalkBind() {
+        let vertical = DisplacementInput.Instance.vertical;
+        let horizontal = DisplacementInput.Instance.horizontal;
 
         // 更新动画状态
-        this.setState(DisplacementInput.Instance.state);
-
-        // let oldPosition_x = this.node.position.x;
-        // let oldPosition_y = this.node.position.y;
-        // let position_x =  oldPosition_x + 200 * deltaTime * DisplacementInput.Instance.horizontal;
-        // let position_y =  oldPosition_y + 200 * deltaTime * DisplacementInput.Instance.vertical;
-        // this.node.position = v3(position_x, position_y);
-
-        let oldLinearVelocity = this.node.getComponent(RigidBody2D).linearVelocity;
-
-        let oldLinearVelocityX = oldLinearVelocity.x;
-        
-        
-        let linearVelocity = this.node.getComponent(RigidBody2D).linearVelocity;
-        linearVelocity.x = 5 * DisplacementInput.Instance.horizontal
-        linearVelocity.y = 5 * DisplacementInput.Instance.vertical
-
-        let linearVelocityX = linearVelocity.x;
-
-        if (oldLinearVelocityX !== linearVelocityX) {
-            console.log(`oldLinearVelocity: ${oldLinearVelocityX}`)
-            console.log(`newLinearVelocity: ${linearVelocityX}`)
+        if (horizontal == 1) {
+            this.setState("hero_right");
+        } else if (horizontal == -1) {
+            this.setState("hero_left");
+        } else if (vertical == 1) {
+            this.setState("hero_up");
+        } else if (vertical == -1) {
+            this.setState("hero_down");
         }
 
+        // 更新线速度(方向速度) 
+        let linearVelocity = this.node.getComponent(RigidBody2D).linearVelocity;
+        linearVelocity.x = this.speed * horizontal
+        linearVelocity.y = this.speed * vertical
         this.node.getComponent(RigidBody2D).linearVelocity = linearVelocity;
-
     }
 
 
     update(deltaTime: number) {
         this.cameraFocusCat()
-        this.keyWalkBind(deltaTime);
+        this.keyWalkBind();
     }
 }
 

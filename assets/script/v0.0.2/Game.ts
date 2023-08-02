@@ -9,16 +9,17 @@ export class Game extends Component {
     titleMap = null;
 
     start() {
+        
     
         let physicsSystem2D = PhysicsSystem2D.instance;
         physicsSystem2D.enable = true;
-        // physicsSystem2D.debugDrawFlags = EPhysics2DDrawFlags.Shape;
+        physicsSystem2D.debugDrawFlags = EPhysics2DDrawFlags.Shape;
         physicsSystem2D.gravity = v2(0,0);
 
-        PhysicsSystem2D.instance.on(Contact2DType.BEGIN_CONTACT, this.onBeginContact, this);
-        PhysicsSystem2D.instance.on(Contact2DType.END_CONTACT, this.onEndContact, this);
-        PhysicsSystem2D.instance.on(Contact2DType.PRE_SOLVE, this.onPreSolve, this);
-        PhysicsSystem2D.instance.on(Contact2DType.POST_SOLVE, this.onPostSolve, this);
+        // PhysicsSystem2D.instance.on(Contact2DType.BEGIN_CONTACT, this.onBeginContact, this);
+        // PhysicsSystem2D.instance.on(Contact2DType.END_CONTACT, this.onEndContact, this);
+        // PhysicsSystem2D.instance.on(Contact2DType.PRE_SOLVE, this.onPreSolve, this);
+        // PhysicsSystem2D.instance.on(Contact2DType.POST_SOLVE, this.onPostSolve, this);
         
     
         let tiledSize = this.titleMap.getTileSize();
@@ -42,7 +43,10 @@ export class Game extends Component {
                     let collider = tiled.node.addComponent(BoxCollider2D);
                     collider.group = 2;
                     // 刚体的实际位置
-                    collider.offset = v2(tiledSize.width / 2 - 192, tiledSize.height / 2 - 192);
+                    // collider.offset = v2(tiledSize.width / 2 - 192, tiledSize.height / 2 - 192);
+
+                    collider.offset = v2(tiledSize.width / 2, tiledSize.height / 2);
+
                     collider.size = tiledSize;
                     collider.apply();
                 }
