@@ -36,19 +36,19 @@ export class DisplacementInput {
         input.on(Input.EventType.KEY_DOWN, (event) => {
             if (event.keyCode == KeyCode.KEY_W) {
                 this.vertical = 1;
-                this.state = "hero_up";
+                this.setState("hero_up");
             } else if (event.keyCode == KeyCode.KEY_S) {
                 this.vertical = -1;
-                this.state = "hero_down";
+                this.setState("hero_down");
             }
 
             if (event.keyCode == KeyCode.KEY_A) {
                 this.horizontal = -1;
-                this.state = "hero_left";
+                this.setState("hero_left");
                 // this.callbackTailsAnimationFun();
             } else if (event.keyCode == KeyCode.KEY_D) {
                 this.horizontal = 1;
-                this.state = "hero_right";
+                this.setState("hero_right");
                 // this.callbackHeadsAnimationFun();
             }
 
