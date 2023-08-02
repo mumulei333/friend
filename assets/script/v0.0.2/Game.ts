@@ -13,7 +13,7 @@ export class Game extends Component {
     
         let physicsSystem2D = PhysicsSystem2D.instance;
         physicsSystem2D.enable = true;
-        physicsSystem2D.debugDrawFlags = EPhysics2DDrawFlags.Shape;
+        // physicsSystem2D.debugDrawFlags = EPhysics2DDrawFlags.Shape;
         physicsSystem2D.gravity = v2(0,0);
 
         // PhysicsSystem2D.instance.on(Contact2DType.BEGIN_CONTACT, this.onBeginContact, this);
@@ -43,8 +43,6 @@ export class Game extends Component {
                     let collider = tiled.node.addComponent(BoxCollider2D);
                     collider.group = 2;
                     // 刚体的实际位置
-                    // collider.offset = v2(tiledSize.width / 2 - 192, tiledSize.height / 2 - 192);
-
                     collider.offset = v2(tiledSize.width / 2, tiledSize.height / 2);
 
                     collider.size = tiledSize;

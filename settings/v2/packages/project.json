@@ -1,8 +1,8 @@
 {
   "general": {
     "designResolution": {
-      "width": 384,
-      "height": 384
+      "width": 768,
+      "height": 768
     }
   },
   "physics": {
