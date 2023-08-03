@@ -14,12 +14,17 @@
       {
         "index": 2,
         "name": "hero"
+      },
+      {
+        "index": 3,
+        "name": "smog"
       }
     ],
     "collisionMatrix": {
       "0": 0,
       "1": 4,
-      "2": 2
+      "2": 10,
+      "3": 4
     }
   }
 }

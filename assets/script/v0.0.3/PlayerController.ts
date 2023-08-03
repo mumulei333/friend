@@ -1,4 +1,4 @@
-import { _decorator, Animation, BoxCollider2D, Collider2D, Component, Contact2DType, find, IPhysics2DContact, Node, RigidBody2D, UIRenderer, v3 } from 'cc';
+import { _decorator, Animation, BoxCollider2D, CircleCollider2D, Collider2D, Component, Contact2DType, find, IPhysics2DContact, Node, RigidBody2D, TiledTile, UIRenderer, v3 } from 'cc';
 import { DisplacementInput } from './DisplacementInput';
 const { ccclass, property } = _decorator;
 
@@ -15,15 +15,29 @@ export class PlayerController extends Component {
     start() {
 
         // 主角与阻碍物平行走突然卡住问题，可以设置Collider2D.restitution回弹系数
-        let collider = this.node.getComponent(BoxCollider2D)
-        collider.on(Contact2DType.BEGIN_CONTACT, this.onBeginContact, this);
+        let boxCollider = this.node.getComponent(BoxCollider2D)
+        boxCollider.on(Contact2DType.BEGIN_CONTACT, this.boxColliderOnBeginContact, this);
+
+                
+        let circleCollider = this.node.getComponent(CircleCollider2D)
+        circleCollider.on(Contact2DType.BEGIN_CONTACT, this.circleColliderOnBeginContact, this);
 
         
     }
 
-    onBeginContact (selfCollider: Collider2D, otherCollider: Collider2D, contact: IPhysics2DContact | null) {
+    boxColliderOnBeginContact (selfCollider: Collider2D, otherCollider: Collider2D, contact: IPhysics2DContact | null) {
         // 只在两个碰撞体开始接触时被调用一次
-        console.log('onBeginContact:只在两个碰撞体开始接触时被调用一次');
+        console.log('boxColliderOnBeginContact:只在两个碰撞体开始接触时被调用一次');
+    }
+
+    circleColliderOnBeginContact (selfCollider: Collider2D, otherCollider: Collider2D, contact: IPhysics2DContact | null) {
+        // 只在两个碰撞体开始接触时被调用一次
+        console.log('circleColliderOnBeginContact:只在两个碰撞体开始接触时被调用一次');
+        if (otherCollider.group == 3) {
+            otherCollider.node.active = false;
+            otherCollider.node.getComponent(TiledTile).gid = 0;
+        }
+
     }
 
 

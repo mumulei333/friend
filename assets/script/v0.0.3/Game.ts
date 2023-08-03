@@ -1,4 +1,4 @@
-import { _decorator, BoxCollider, BoxCollider2D, Collider2D, Component, Contact2DType, director, EPhysics2DDrawFlags, ERigidBody2DType, ERigidBodyType, IPhysics2DContact, Node, physics, PhysicsSystem2D, RigidBody, RigidBody2D, TiledMap, TiledTile, v2, v3 } from 'cc';
+import { _decorator, BoxCollider, BoxCollider2D, CircleCollider2D, Collider2D, Component, Contact2DType, director, EPhysics2DDrawFlags, ERigidBody2DType, ERigidBodyType, IPhysics2DContact, math, Node, physics, PhysicsSystem2D, RigidBody, RigidBody2D, TiledLayer, TiledMap, TiledTile, v2, v3 } from 'cc';
 const { ccclass, property } = _decorator;
 
 @ccclass('Game')
@@ -13,8 +13,12 @@ export class Game extends Component {
     
         let physicsSystem2D = PhysicsSystem2D.instance;
         physicsSystem2D.enable = true;
-        // physicsSystem2D.debugDrawFlags = EPhysics2DDrawFlags.Shape;
+        physicsSystem2D.debugDrawFlags = EPhysics2DDrawFlags.Shape;
         physicsSystem2D.gravity = v2(0,0);
+
+        physicsSystem2D.collisionMatrix
+
+    
 
         // PhysicsSystem2D.instance.on(Contact2DType.BEGIN_CONTACT, this.onBeginContact, this);
         // PhysicsSystem2D.instance.on(Contact2DType.END_CONTACT, this.onEndContact, this);
@@ -25,32 +29,17 @@ export class Game extends Component {
             let titleMap = mapNode.getComponent(TiledMap);
 
             let tiledSize = titleMap.getTileSize();
-            let layer = titleMap.getLayer('wall');
-            let layerSize = layer.getLayerSize();
+            let wallLayer = titleMap.getLayer('wall');
+            let layerSize = wallLayer.getLayerSize();
+
+            let smogLayer = titleMap.getLayer('smog');
+            // smogLayer.node.active = false;
+
 
             for (let x = 0; x < layerSize.width; x++) {
-
                 for (let y = 0; y < layerSize.height; y++) {
-                    let gid = layer.getTileGIDAt(x, y);
-                    if (gid != 0) {
-                        console.log(`x: ${x}, y: ${y}, GID: ${gid}`);
-                        
-                        let tiled = layer.getTiledTileAt(x, y, true);
-                        tiled.node.group = 'wall';
-
-                        let body = tiled.node.addComponent(RigidBody2D);
-                        body.type = ERigidBody2DType.Static;
-                        body.group = 2;
-
-                        let collider = tiled.node.addComponent(BoxCollider2D);
-                        collider.group = 2;
-                        // 刚体的实际位置
-                        collider.offset = v2(tiledSize.width / 2, tiledSize.height / 2);
-
-                        collider.size = tiledSize;
-                        collider.apply();
-                    }
-
+                    this.wallLayerAddComponent(x, y, tiledSize, wallLayer);
+                    this.smogLayerAddComponent(x, y, tiledSize, smogLayer);
                 }
 
             }
@@ -58,6 +47,44 @@ export class Game extends Component {
         }
     
         
+    }
+
+
+    wallLayerAddComponent(x: number, y: number, tiledSize: math.Size, wallLayer: TiledLayer) {
+        let gid = wallLayer.getTileGIDAt(x, y);
+        if (gid != 0) {
+            console.log(`x: ${x}, y: ${y}, GID: ${gid}`);
+            
+            let tiled = wallLayer.getTiledTileAt(x, y, true);
+            let body = tiled.node.addComponent(RigidBody2D);
+            body.type = ERigidBody2DType.Static;
+            body.group = 2;
+
+            let collider = tiled.node.addComponent(BoxCollider2D);
+            collider.group = 2;
+            // 刚体的实际位置
+            collider.offset = v2(tiledSize.width / 2, tiledSize.height / 2);
+            collider.size = tiledSize;
+            collider.apply();
+        }
+    }
+
+    smogLayerAddComponent(x: number, y: number, tiledSize: math.Size, smogLayer: TiledLayer) {
+
+        let gid = smogLayer.getTileGIDAt(x, y);
+        if (gid != 0) {
+            console.log(`x: ${x}, y: ${y}, GID: ${gid}`);
+            let tiled = smogLayer.getTiledTileAt(x, y, true);
+
+            let collider = tiled.node.addComponent(BoxCollider2D);
+            // tiled.node.group = 'smog';
+            collider.group = 3;
+            // 刚体的实际位置
+            collider.offset = v2(tiledSize.width / 2, tiledSize.height / 2);
+            collider.size = tiledSize;
+            // collider.apply();
+        }
+
     }
 
 
