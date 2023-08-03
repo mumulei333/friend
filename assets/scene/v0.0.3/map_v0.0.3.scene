@@ -5488,9 +5488,9 @@
     "_enabled": true,
     "__prefab": null,
     "tag": 0,
-    "_group": 8,
+    "_group": 16,
     "_density": 1,
-    "_sensor": false,
+    "_sensor": true,
     "_friction": 0.2,
     "_restitution": 0,
     "_offset": {
@@ -5498,7 +5498,7 @@
       "x": 0,
       "y": 0
     },
-    "_radius": 30,
+    "_radius": 100,
     "_id": "8cNj7VbUVMzoMscGVnkVy3"
   },
   {

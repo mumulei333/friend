@@ -32,9 +32,21 @@ export class PlayerController extends Component {
 
     circleColliderOnBeginContact (selfCollider: Collider2D, otherCollider: Collider2D, contact: IPhysics2DContact | null) {
         // 只在两个碰撞体开始接触时被调用一次
-        console.log('circleColliderOnBeginContact:只在两个碰撞体开始接触时被调用一次');
-        if (otherCollider.group == 3) {
-            otherCollider.node.active = false;
+        // console.log('circleColliderOnBeginContact:只在两个碰撞体开始接触时被调用一次');
+
+        // 这里处理的是两个物体碰撞但不阻挡的回调，设置Collider2D中的sensor属性即可只走回调不阻挡
+        if (otherCollider.group == 8) {
+            // console.log(otherCollider.node)
+            // cocos Bug？挂载RigidBody2D的Node节点使用active设置隐藏报错, 
+            // 由于我们这边在设置smog的挂载了RigidBody2D组件，所以不能用otherCollider.node.active = false;
+            // 所以使用一下代码完成消除迷雾功能
+            // 盒子外观消失
+            otherCollider.node.setScale(0,0)
+            // 刚体休眠(提高性能)
+            otherCollider.node.getComponent(RigidBody2D).sleep();
+            // 切换物理碰撞分组使其不再进行碰撞回调
+            otherCollider.node.getComponent(BoxCollider2D).group = 0;
+            // 归零gid
             otherCollider.node.getComponent(TiledTile).gid = 0;
         }
 

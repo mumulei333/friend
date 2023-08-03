@@ -18,13 +18,18 @@
       {
         "index": 3,
         "name": "smog"
+      },
+      {
+        "index": 4,
+        "name": "hero_smog"
       }
     ],
     "collisionMatrix": {
       "0": 0,
       "1": 4,
-      "2": 10,
-      "3": 4
+      "2": 2,
+      "3": 16,
+      "4": 8
     }
   }
 }
