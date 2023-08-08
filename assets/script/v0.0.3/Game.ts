@@ -1,4 +1,4 @@
-import { _decorator, BoxCollider, BoxCollider2D, CircleCollider2D, Collider2D, Component, Contact2DType, director, EPhysics2DDrawFlags, ERigidBody2DType, ERigidBodyType, IPhysics2DContact, math, Node, physics, PhysicsSystem, PhysicsSystem2D, RigidBody, RigidBody2D, TiledLayer, TiledMap, TiledTile, v2, v3, Vec3 } from 'cc';
+import { _decorator, BoxCollider, BoxCollider2D, CircleCollider2D, Collider2D, Component, Contact2DType, director, EPhysics2DDrawFlags, ERigidBody2DType, ERigidBodyType, find, instantiate, IPhysics2DContact, math, Node, physics, PhysicsSystem, PhysicsSystem2D, Prefab, RigidBody, RigidBody2D, TiledLayer, TiledMap, TiledTile, UITransform, v2, v3, Vec3 } from 'cc';
 const { ccclass, property } = _decorator;
 
 @ccclass('Game')
@@ -8,12 +8,18 @@ export class Game extends Component {
     @property({ type: Node })
     mapNode = null;
 
+
+    @property({ type: Prefab })
+    npcPrefab = null
+
+    
+
     start() {
         
     
         let physicsSystem2D = PhysicsSystem2D.instance;
         physicsSystem2D.enable = true;
-        // physicsSystem2D.debugDrawFlags = EPhysics2DDrawFlags.Shape;
+        physicsSystem2D.debugDrawFlags = EPhysics2DDrawFlags.Shape;
         physicsSystem2D.gravity = v2(0,0);
 
         console.log(`PhysicsSystem2D.PhysicsGroup : ${JSON.stringify(PhysicsSystem2D.PhysicsGroup)}`)
@@ -33,7 +39,12 @@ export class Game extends Component {
             let layerSize = wallLayer.getLayerSize();
 
             let smogLayer = titleMap.getLayer('smog');
-            // smogLayer.markForUpdateRenderData = true;
+
+            let playerLayer = titleMap.getObjectGroup("object_layer");
+            // 获取某个对象
+            let players = playerLayer.getObjects();
+
+            this.objectLayerAddComponent(titleMap, players);
             
             // smogLayer.node.active = false;
 
@@ -41,7 +52,7 @@ export class Game extends Component {
             for (let x = 0; x < layerSize.width; x++) {
                 for (let y = 0; y < layerSize.height; y++) {
                     this.wallLayerAddComponent(x, y, tiledSize, wallLayer);
-                    this.smogLayerAddComponent(x, y, tiledSize, smogLayer);
+                    // this.smogLayerAddComponent(x, y, tiledSize, smogLayer);
                 }
 
             }
@@ -50,6 +61,38 @@ export class Game extends Component {
     
         
     }
+
+    objectLayerAddComponent(titleMap: TiledMap, players: any[]) {
+
+        for (let x = 0; x < players.length; x++) {
+
+            let playerObj = players[x];
+
+            if (playerObj.npc == true) {
+                // 加载npc预设体, 创建npc
+                let npc = instantiate(this.npcPrefab);
+                let localPos = find("Canvas").getComponent(UITransform).convertToNodeSpaceAR(new Vec3(playerObj.x, playerObj.y));
+                npc.position = v3(localPos.x, localPos.y);
+                npc.parent = titleMap.node.children[3];
+
+                let body = npc.addComponent(RigidBody2D);
+                body.type = ERigidBody2DType.Dynamic;
+                body.group = 4;
+    
+                let collider = npc.addComponent(BoxCollider2D);
+                collider.group = 4;
+                // 刚体的实际位置
+                // collider.offset = v2(npc.width / 2, npc.height / 2);
+                collider.size.set(32, 32);
+                collider.apply();
+
+            }
+        }
+
+    }
+
+
+
 
 
     wallLayerAddComponent(x: number, y: number, tiledSize: math.Size, wallLayer: TiledLayer) {
