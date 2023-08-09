@@ -70,6 +70,15 @@ export class Game extends Component {
 
             if (playerObj.npc == true) {
 
+                // 00010:{10001}
+                // 00100:{10002}
+                // 01000:{10003}
+                // 10000:{10004}
+                // 11110:{10005}
+                // 11111:{10006, 10007}
+
+
+
                 // 调试npc坐标用的
                 // if (playerObj.npc_id == '10005') {
                 //     console.log(`中心地N坐标 x: ${playerObj.x}, y: ${playerObj.y}`)
@@ -84,12 +93,18 @@ export class Game extends Component {
                 let wlocalPos = titleMap.getComponent(UITransform).convertToWorldSpaceAR(new Vec3(playerObj.x, playerObj.y));
                 let localPos = find("Canvas").getComponent(UITransform).convertToNodeSpaceAR(new Vec3(wlocalPos.x, wlocalPos.y));
 
-                npc.position = v3(localPos.x / 2, localPos.y / 2);
+                console.log(`npc_id: ${playerObj.npc_id}, map_pos: {x: ${playerObj.x}, y: ${playerObj.y}}, wlocalPos: {x: ${wlocalPos.x}, y: ${wlocalPos.y}}, canvasPos: {x: ${localPos.x}, y: ${localPos.y}} `)
+
+                // npc.position = v3(localPos.x / 2, localPos.y / 2);
+                // npc.worldPosition = v3(x * 100, x * 100); // 测试位置用的
+                npc.worldPosition = v3(playerObj.x - 192, playerObj.y - 192);
                 npc.parent = titleMap.node.children[3];
 
                 let body = npc.addComponent(RigidBody2D);
                 body.type = ERigidBody2DType.Dynamic;
                 body.group = 4;
+                body.fixedRotation = true;
+                body.gravityScale = 0;
     
                 let collider = npc.addComponent(BoxCollider2D);
                 collider.group = 4;

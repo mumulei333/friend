@@ -1,4 +1,4 @@
-import { _decorator, Animation, Component, Node, RigidBody2D, v2, v3 } from 'cc';
+import { _decorator, Animation, Component, Node, RigidBody2D, tween, v2, v3 } from 'cc';
 const { ccclass, property } = _decorator;
 
 @ccclass('Npc')
@@ -25,7 +25,7 @@ export class Npc extends Component {
 
 
     private timer: number = 0;
-    private interval: number = 1; // 间隔时间，单位：秒
+    private interval: number = 2; // 间隔时间，单位：秒
 
     start() {
 
@@ -65,82 +65,107 @@ export class Npc extends Component {
 
         let orientation = this.getRandomNumberInRange(0, 4);
 
-        if (orientation == 0) {
-            // 假设往上走, 不能操作npc行动范围的最大值和最小值，如果超过就往反方向走。
-            if (npcPosition_y + this.travelDistance > this.maxRandomPosition_y) {
-                npcPosition_y -= this.travelDistance;
-            } else {
-                npcPosition_y += this.travelDistance;
-            }
-            this.setState("npc_up")
-        } else if (orientation == 1) {
-            // 假设往下走
-            if (npcPosition_y - this.travelDistance < this.minRandomPosition_y) {
-                npcPosition_y += this.travelDistance;
-            } else {
-                npcPosition_y -= this.travelDistance;
-            }
-            this.setState("npc_down")
-        } else if (orientation == 2) {
-            // 假设往左走
-            if (npcPosition_x - this.travelDistance < this.minRandomPosition_x) {
-                npcPosition_x += this.travelDistance;
-            } else {
-                npcPosition_x -= this.travelDistance;
-            }
-            this.setState("npc_left")
-        } else {
-            // 假设往右走
-            if (npcPosition_x + this.travelDistance > this.maxRandomPosition_x) {
-                npcPosition_x -= this.travelDistance;
-            } else {
-                npcPosition_x += this.travelDistance;
-            }
-            this.setState("npc_right")
-        }
-
-        this.node.position = v3(npcPosition_x, npcPosition_y);
-
+        // 更改节点position方式行走会进行碰撞失效，不采用
         // if (orientation == 0) {
         //     // 假设往上走, 不能操作npc行动范围的最大值和最小值，如果超过就往反方向走。
         //     if (npcPosition_y + this.travelDistance > this.maxRandomPosition_y) {
-        //         linearVelocity_y = - this.travelDistance;
+        //         npcPosition_y -= this.travelDistance;
         //     } else {
-        //         linearVelocity_y = this.travelDistance;
+        //         npcPosition_y += this.travelDistance;
         //     }
         //     this.setState("npc_up")
         // } else if (orientation == 1) {
         //     // 假设往下走
         //     if (npcPosition_y - this.travelDistance < this.minRandomPosition_y) {
-        //         linearVelocity_y = this.travelDistance;
+        //         npcPosition_y += this.travelDistance;
         //     } else {
-        //         linearVelocity_y = - this.travelDistance;
+        //         npcPosition_y -= this.travelDistance;
         //     }
         //     this.setState("npc_down")
         // } else if (orientation == 2) {
         //     // 假设往左走
         //     if (npcPosition_x - this.travelDistance < this.minRandomPosition_x) {
-        //         linearVelocity_x = this.travelDistance;
+        //         npcPosition_x += this.travelDistance;
         //     } else {
-        //         linearVelocity_x = - this.travelDistance;
+        //         npcPosition_x -= this.travelDistance;
         //     }
         //     this.setState("npc_left")
         // } else {
         //     // 假设往右走
         //     if (npcPosition_x + this.travelDistance > this.maxRandomPosition_x) {
-        //         linearVelocity_x = - this.travelDistance;
+        //         npcPosition_x -= this.travelDistance;
         //     } else {
-        //         linearVelocity_x = this.travelDistance;
+        //         npcPosition_x += this.travelDistance;
         //     }
         //     this.setState("npc_right")
         // }
+        // this.node.position = v3(npcPosition_x, npcPosition_y);
 
-        // 执行行走
-        // 更新线速度(方向速度) 
+        // 更新线速度行走
+        if (orientation == 0) {
+            // 假设往上走, 不能操作npc行动范围的最大值和最小值，如果超过就往反方向走。
+            if (npcPosition_y + this.travelDistance > this.maxRandomPosition_y) {
+                linearVelocity_y = - this.travelDistance;
+            } else {
+                linearVelocity_y = this.travelDistance;
+            }
+            this.setState("npc_up")
+        } else if (orientation == 1) {
+            // 假设往下走
+            if (npcPosition_y - this.travelDistance < this.minRandomPosition_y) {
+                linearVelocity_y = this.travelDistance;
+            } else {
+                linearVelocity_y = - this.travelDistance;
+            }
+            this.setState("npc_down")
+        } else if (orientation == 2) {
+            // 假设往左走
+            if (npcPosition_x - this.travelDistance < this.minRandomPosition_x) {
+                linearVelocity_x = this.travelDistance;
+            } else {
+                linearVelocity_x = - this.travelDistance;
+            }
+            this.setState("npc_left")
+        } else {
+            // 假设往右走
+            if (npcPosition_x + this.travelDistance > this.maxRandomPosition_x) {
+                linearVelocity_x = - this.travelDistance;
+            } else {
+                linearVelocity_x = this.travelDistance;
+            }
+            this.setState("npc_right")
+        }
+
+        // // 执行行走
+        // // 更新线速度(方向速度) 
         // let linearVelocity = this.node.getComponent(RigidBody2D).linearVelocity;
         // linearVelocity.x = linearVelocity_x;
         // linearVelocity.y = linearVelocity_y;
         // this.node.getComponent(RigidBody2D).linearVelocity = linearVelocity;
+
+        // // 行走后重置
+        // let nextLinearVelocity = this.node.getComponent(RigidBody2D).linearVelocity;
+        // nextLinearVelocity.x = 0;
+        // nextLinearVelocity.y = 0;
+        // this.node.getComponent(RigidBody2D).linearVelocity = nextLinearVelocity;
+
+
+        tween(this.node)
+        .call(() => {
+            let linearVelocity = this.node.getComponent(RigidBody2D).linearVelocity;
+            linearVelocity.x = linearVelocity_x;
+            linearVelocity.y = linearVelocity_y;
+            this.node.getComponent(RigidBody2D).linearVelocity = linearVelocity;
+        })
+        .delay(0.05)
+        .call(() => {
+            // 行走后重置
+            let nextLinearVelocity = this.node.getComponent(RigidBody2D).linearVelocity;
+            nextLinearVelocity.x = 0;
+            nextLinearVelocity.y = 0;
+            this.node.getComponent(RigidBody2D).linearVelocity = nextLinearVelocity;
+        })
+        .start();
 
 
 
