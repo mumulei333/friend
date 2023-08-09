@@ -1,4 +1,4 @@
-import { _decorator, Animation, Component, Node, RigidBody2D } from 'cc';
+import { _decorator, Animation, Component, Node, RigidBody2D, v2, v3 } from 'cc';
 const { ccclass, property } = _decorator;
 
 @ccclass('Npc')
@@ -13,7 +13,7 @@ export class Npc extends Component {
     isGoWalk: boolean = true;
 
     // 每次移动的距离
-    travelDistance: number = 1;
+    travelDistance: number = 16;
 
     // npc行动范围
     minRandomPosition_x: number = 0;
@@ -23,6 +23,9 @@ export class Npc extends Component {
 
     state: string = 'hero_down';
 
+
+    private timer: number = 0;
+    private interval: number = 1; // 间隔时间，单位：秒
 
     start() {
 
@@ -51,54 +54,97 @@ export class Npc extends Component {
         } else {
             console.log(`npc:${this.npc_id}, 开始随机行走。。。。`)
         }
+
+        this.isGoWalk = false;
         
         let npcPosition_x = this.node.position.x;
         let npcPosition_y = this.node.position.y;
+
+        let linearVelocity_x = 0;
+        let linearVelocity_y = 0;
 
         let orientation = this.getRandomNumberInRange(0, 4);
 
         if (orientation == 0) {
             // 假设往上走, 不能操作npc行动范围的最大值和最小值，如果超过就往反方向走。
             if (npcPosition_y + this.travelDistance > this.maxRandomPosition_y) {
-                npcPosition_y = - this.travelDistance;
+                npcPosition_y -= this.travelDistance;
             } else {
-                npcPosition_y = this.travelDistance;
+                npcPosition_y += this.travelDistance;
             }
             this.setState("npc_up")
         } else if (orientation == 1) {
             // 假设往下走
             if (npcPosition_y - this.travelDistance < this.minRandomPosition_y) {
-                npcPosition_y = this.travelDistance;
+                npcPosition_y += this.travelDistance;
             } else {
-                npcPosition_y = - this.travelDistance;
+                npcPosition_y -= this.travelDistance;
             }
             this.setState("npc_down")
         } else if (orientation == 2) {
             // 假设往左走
             if (npcPosition_x - this.travelDistance < this.minRandomPosition_x) {
-                npcPosition_x = this.travelDistance;
+                npcPosition_x += this.travelDistance;
             } else {
-                npcPosition_x = - this.travelDistance;
+                npcPosition_x -= this.travelDistance;
             }
             this.setState("npc_left")
         } else {
             // 假设往右走
             if (npcPosition_x + this.travelDistance > this.maxRandomPosition_x) {
-                npcPosition_x = - this.travelDistance;
+                npcPosition_x -= this.travelDistance;
             } else {
-                npcPosition_x = this.travelDistance;
+                npcPosition_x += this.travelDistance;
             }
             this.setState("npc_right")
         }
 
+        this.node.position = v3(npcPosition_x, npcPosition_y);
+
+        // if (orientation == 0) {
+        //     // 假设往上走, 不能操作npc行动范围的最大值和最小值，如果超过就往反方向走。
+        //     if (npcPosition_y + this.travelDistance > this.maxRandomPosition_y) {
+        //         linearVelocity_y = - this.travelDistance;
+        //     } else {
+        //         linearVelocity_y = this.travelDistance;
+        //     }
+        //     this.setState("npc_up")
+        // } else if (orientation == 1) {
+        //     // 假设往下走
+        //     if (npcPosition_y - this.travelDistance < this.minRandomPosition_y) {
+        //         linearVelocity_y = this.travelDistance;
+        //     } else {
+        //         linearVelocity_y = - this.travelDistance;
+        //     }
+        //     this.setState("npc_down")
+        // } else if (orientation == 2) {
+        //     // 假设往左走
+        //     if (npcPosition_x - this.travelDistance < this.minRandomPosition_x) {
+        //         linearVelocity_x = this.travelDistance;
+        //     } else {
+        //         linearVelocity_x = - this.travelDistance;
+        //     }
+        //     this.setState("npc_left")
+        // } else {
+        //     // 假设往右走
+        //     if (npcPosition_x + this.travelDistance > this.maxRandomPosition_x) {
+        //         linearVelocity_x = - this.travelDistance;
+        //     } else {
+        //         linearVelocity_x = this.travelDistance;
+        //     }
+        //     this.setState("npc_right")
+        // }
+
         // 执行行走
         // 更新线速度(方向速度) 
-        let linearVelocity = this.node.getComponent(RigidBody2D).linearVelocity;
-        linearVelocity.x = 0;
-        linearVelocity.y = 0;
-        this.node.getComponent(RigidBody2D).linearVelocity = linearVelocity;
+        // let linearVelocity = this.node.getComponent(RigidBody2D).linearVelocity;
+        // linearVelocity.x = linearVelocity_x;
+        // linearVelocity.y = linearVelocity_y;
+        // this.node.getComponent(RigidBody2D).linearVelocity = linearVelocity;
 
-        this.isGoWalk = false;
+
+
+        this.isGoWalk = true;
     }
 
     // 获取两数之间的随机数
@@ -112,6 +158,7 @@ export class Npc extends Component {
         return Math.trunc(randomNumber);
     }
 
+    
 
 
     update(deltaTime: number) {
@@ -120,7 +167,16 @@ export class Npc extends Component {
 
         // }
 
-        // this.randomWalk();
+        // 每帧累加计时器
+        this.timer += deltaTime;
+        // 当计时器超过间隔时间时，执行方法并重置计时器
+        if (this.timer >= this.interval) {
+            this.timer = 0; // 重置计时器
+
+            // 在这里调用你想要执行的方法
+            this.randomWalk();
+        }
+        
 
         
     }

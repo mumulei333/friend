@@ -69,10 +69,22 @@ export class Game extends Component {
             let playerObj = players[x];
 
             if (playerObj.npc == true) {
-                // 加载npc预设体, 创建npc
+
+                // 调试npc坐标用的
+                // if (playerObj.npc_id == '10005') {
+                //     console.log(`中心地N坐标 x: ${playerObj.x}, y: ${playerObj.y}`)
+                //     let wlocalPos = titleMap.getComponent(UITransform).convertToWorldSpaceAR(new Vec3(playerObj.x, playerObj.y));
+                //     let localPos = find("Canvas").getComponent(UITransform).convertToNodeSpaceAR(new Vec3(wlocalPos.x, wlocalPos.y));
+                //     console.log(`转canvas后的中心地N坐标 x: ${localPos.x}, y: ${localPos.y}`)
+                // }
+
+                // 加载npc预设体, 创建npc 10005 
                 let npc = instantiate(this.npcPrefab);
-                let localPos = find("Canvas").getComponent(UITransform).convertToNodeSpaceAR(new Vec3(playerObj.x, playerObj.y));
-                npc.position = v3(localPos.x, localPos.y);
+
+                let wlocalPos = titleMap.getComponent(UITransform).convertToWorldSpaceAR(new Vec3(playerObj.x, playerObj.y));
+                let localPos = find("Canvas").getComponent(UITransform).convertToNodeSpaceAR(new Vec3(wlocalPos.x, wlocalPos.y));
+
+                npc.position = v3(localPos.x / 2, localPos.y / 2);
                 npc.parent = titleMap.node.children[3];
 
                 let body = npc.addComponent(RigidBody2D);
@@ -83,7 +95,7 @@ export class Game extends Component {
                 collider.group = 4;
                 // 刚体的实际位置
                 // collider.offset = v2(npc.width / 2, npc.height / 2);
-                collider.size.set(32, 32);
+                collider.size.set(npc.width, npc.height);
                 collider.apply();
 
             }
