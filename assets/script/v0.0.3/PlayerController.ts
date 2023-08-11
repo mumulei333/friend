@@ -1,5 +1,6 @@
-import { _decorator, Animation, BoxCollider2D, CircleCollider2D, Collider2D, Component, Contact2DType, find, IPhysics2DContact, Node, RigidBody2D, TiledTile, UIRenderer, v3 } from 'cc';
+import { _decorator, Animation, BoxCollider2D, CircleCollider2D, Collider2D, Component, Contact2DType, ERigidBody2DType, find, IPhysics2DContact, Node, RigidBody2D, TiledTile, UIRenderer, v3 } from 'cc';
 import { DisplacementInput } from './DisplacementInput';
+import { OperationInput } from './OperationInput';
 const { ccclass, property } = _decorator;
 
 @ccclass('PlayerController')
@@ -27,7 +28,7 @@ export class PlayerController extends Component {
 
     boxColliderOnBeginContact (selfCollider: Collider2D, otherCollider: Collider2D, contact: IPhysics2DContact | null) {
         // 只在两个碰撞体开始接触时被调用一次
-        console.log('boxColliderOnBeginContact:只在两个碰撞体开始接触时被调用一次');
+        console.log('boxColliderOnBeginContact:只在两个碰撞体开始接触时被调用一次: 玩家角色触发碰撞');
     }
 
     circleColliderOnBeginContact (selfCollider: Collider2D, otherCollider: Collider2D, contact: IPhysics2DContact | null) {
@@ -50,6 +51,32 @@ export class PlayerController extends Component {
             otherCollider.node.getComponent(TiledTile).gid = 0;
         }
 
+    }
+
+    // 操作输入事件绑定
+    operationInputEventCallbackFunInit() {
+        // 鼠标输入事件
+        OperationInput.Instance.callbackFunByKey_K = this.operationInputKey_OEvent;
+        OperationInput.Instance.callbackFunByKey_K = this.operationInputKey_OEvent;
+        OperationInput.Instance.callbackFunByKey_K = this.operationInputKey_OEvent;
+        OperationInput.Instance.callbackFunByKey_K = this.operationInputKey_OEvent;
+        
+    }
+
+    operationInputKey_OEvent() {
+        console.log("你按下了O键");
+    }
+
+    operationInputKey_KEvent() {
+        console.log("你按下了K键");
+    }
+
+    operationInputKey_LEvent() {
+        console.log("你按下了L键");
+    }
+
+    operationInputKey_PEvent() {
+        console.log("你按下了P键");
     }
 
 
@@ -78,6 +105,13 @@ export class PlayerController extends Component {
     keyWalkBind() {
         let vertical = DisplacementInput.Instance.vertical;
         let horizontal = DisplacementInput.Instance.horizontal;
+
+        if (vertical == 0 && horizontal == 0) {
+            this.node.getComponent(RigidBody2D).type = ERigidBody2DType.Static;
+            return;
+        } else {
+            this.node.getComponent(RigidBody2D).type = ERigidBody2DType.Dynamic;
+        }
 
         // 更新动画状态
         if (horizontal == 1) {

@@ -19,7 +19,7 @@ export class Game extends Component {
     
         let physicsSystem2D = PhysicsSystem2D.instance;
         physicsSystem2D.enable = true;
-        physicsSystem2D.debugDrawFlags = EPhysics2DDrawFlags.Shape;
+        // physicsSystem2D.debugDrawFlags = EPhysics2DDrawFlags.Shape;
         physicsSystem2D.gravity = v2(0,0);
 
         console.log(`PhysicsSystem2D.PhysicsGroup : ${JSON.stringify(PhysicsSystem2D.PhysicsGroup)}`)
@@ -87,6 +87,10 @@ export class Game extends Component {
                 //     console.log(`转canvas后的中心地N坐标 x: ${localPos.x}, y: ${localPos.y}`)
                 // }
 
+                if (playerObj.npc_id != '10005') {
+                    return;
+                }
+
                 // 加载npc预设体, 创建npc 10005 
                 let npc = instantiate(this.npcPrefab);
 
@@ -101,7 +105,8 @@ export class Game extends Component {
                 npc.parent = titleMap.node.children[3];
 
                 let body = npc.addComponent(RigidBody2D);
-                body.type = ERigidBody2DType.Dynamic;
+                body.type = ERigidBody2DType.Kinematic;
+                body.enabledContactListener = true;
                 body.group = 4;
                 body.fixedRotation = true;
                 body.gravityScale = 0;
