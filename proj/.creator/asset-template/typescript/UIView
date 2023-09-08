@@ -1,0 +1,90 @@
+import UIView from "db://quick/core/ui/UIView";
+import { inject } from "db://quick/defines/Decorators";
+import { _decorator, Component, Node } from 'cc';
+const { ccclass, property } = _decorator;
+
+@ccclass('<%UnderscoreCaseClassName%>')
+export class <%UnderscoreCaseClassName%> extends UIView {
+    
+    public static getPrefabUrl() {
+        // 返回你自己的 预置体资源路径，相对于bundle的
+        return "PrefabUrl";
+    }
+
+    @inject("content",Node)
+    private content : Node = null!;
+
+    onLoad(){
+        super.onLoad();
+    }
+
+    addEvents(): void {
+        super.addEvents();
+    }
+
+    protected get showAction(){
+        return ( complete : ()=>void )=>{
+            App.utils.showView(this.content,complete);
+        }
+    }
+
+    protected get closeAction(){
+        return ( complete : ()=>void )=>{
+            App.utils.hideView(this.content,complete);
+        };
+    }
+
+    onShow(): void {
+        // todo
+        super.onShow()
+    }
+
+    onClose(): void {
+        // todo
+        super.onClose();
+    }
+}
+
+/**
+ * COMMENTS_GENERATE_IGNORE
+ * Use "COMMENTS_GENERATE_IGNORE" tag if you do not want later created scripts to contain these comments.
+ * 
+ * Predefined Variables
+ * You can use predefined variables below to setup your scripting preference. For example, whether to use camel case style.
+ * 
+ * <%UnderscoreCaseClassName%>, class name in underscore format, like 'new_component'
+ * <%CamelCaseClassName%>, class name in camel format, like 'NewComponent'
+ * <%Author%>, Who create this file
+ * <%DateTime%>, when create this file
+ * <%FileBasename%>, creating file name with extension
+ * <%FileBasenameNoExtension%>, creating file name without extension
+ * <%URL%>, url of this file in COCOS ASSET URL format
+ * <%ManualUrl%>, url of office help document, like 'https://docs.cocos.com/creator/manual/en/'
+ *
+ * 
+ * Example:
+ * 
+  @ccclass('<%UnderscoreCaseClassName%>')
+  export class <%UnderscoreCaseClassName%> extends Component {
+  
+    // class member could be defined like this.
+    dummy = '';
+
+    // Use 'property' decorator if your want the member to be serializable.
+    @property
+    serializableDummy = 0;
+
+    start () {
+        // Your initialization goes here.
+    }
+
+    update (deltaTime: number) {
+        // Your update function goes here.
+    }
+
+  }
+ *
+ * Learn more about scripting: <%ManualUrl%>scripting/
+ * Learn more about CCClass: <%ManualUrl%>scripting/decorator.html
+ * Learn more about life-cycle callbacks: <%ManualUrl%>scripting/life-cycle-callbacks.html
+ */
