@@ -185,7 +185,7 @@ export class UIManager implements ISingleton {
                 viewData.isPrefab = result.isPrefab;
                 viewData.viewType = openOption.type;
                 viewData.bundle = openOption.bundle;
-                viewData.isCache = openOption.isCache;
+                viewData.isCache = openOption.isCache!;
                 this._viewDatas.set(className, viewData);
                 if (!result.isPrefab) {
                     //说明存在于主场景中
