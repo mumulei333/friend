@@ -1,11 +1,12 @@
-import { Framewok } from "db://quick/scripts/framework/Framework";
-import { StageData } from "db://quick/scripts/framework/data/StageData";
-import { LogLevel } from "db://quick/scripts/framework/defines/Enums";
-import { IAlert } from "db://quick/scripts/framework/interface/IAlert";
-import { ILoading } from "db://quick/scripts/framework/interface/ILoading";
-import { ITips } from "db://quick/scripts/framework/interface/ITips";
-import { IUILoading } from "db://quick/scripts/framework/interface/IUILoading";
-import { Singleton } from "db://quick/scripts/framework/utils/Singleton";
+import { Framewok } from "db://quick/Framework";
+import { StageData } from "db://quick/data/StageData";
+import { LogLevel } from "db://quick/defines/Enums";
+import { IAlert } from "db://quick/interface/IAlert";
+import { ILoading } from "db://quick/interface/ILoading";
+import { ITips } from "db://quick/interface/ITips";
+import { IUILoading } from "db://quick/interface/IUILoading";
+import { Singleton } from "db://quick/utils/Singleton";
+import LayerManager from "db://quick/core/ui/LayerManager";
 
 export class <%UnderscoreCaseClassName%> extends Framewok {
 
@@ -51,6 +52,12 @@ export class <%UnderscoreCaseClassName%> extends Framewok {
         return Singleton.get(ILoading)!;
     }
 
+    get layerMgr(){
+        // 参考示例返回自己的
+        // return Singleton.get(LayerManager,true,Config.LAYERS)!;
+        return Singleton.get(LayerManager)!;
+    }
+
     init() {
         super.init();
         // this.stageData.isShowDebugButton = Config.isShowDebugButton;
@@ -63,7 +70,7 @@ export class <%UnderscoreCaseClassName%> extends Framewok {
     }
 }
 
-let app = new Application();
+let app = new <%UnderscoreCaseClassName%>();
 app.logger.level = LogLevel.ALL;
 (<any>window)["App"] = app;
 app.init();

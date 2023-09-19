@@ -1,37 +1,26 @@
-import UIView from "db://quick/core/ui/UIView";
+import GameView from "db://quick/core/ui/GameView";
 import { inject } from "db://quick/defines/Decorators";
 import { _decorator, Component, Node } from 'cc';
 const { ccclass, property } = _decorator;
 
 @ccclass('<%UnderscoreCaseClassName%>')
-export default class <%UnderscoreCaseClassName%> extends UIView {
+export default class <%UnderscoreCaseClassName%> extends GameView {
     
     public static getPrefabUrl() {
         // 返回你自己的 预置体资源路径，相对于bundle的
         return "PrefabUrl";
     }
 
-    @inject("content",Node)
-    private content : Node = null!;
-
     onLoad(){
         super.onLoad();
     }
 
+    onDestroy(): void {
+        super.onDestroy()
+    }
+
     addEvents(): void {
         super.addEvents();
-    }
-
-    protected get showAction(){
-        return ( complete : ()=>void )=>{
-            App.utils.showView(this.content,complete);
-        }
-    }
-
-    protected get closeAction(){
-        return ( complete : ()=>void )=>{
-            App.utils.hideView(this.content,complete);
-        };
     }
 
     onShow(): void {
