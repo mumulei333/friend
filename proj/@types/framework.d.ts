@@ -359,3 +359,11 @@ interface BundleData{
 	/**@description 排序 */
 	sort : number;
 }
+
+/**@description 层级 配置 */
+interface LayerConfig{
+	/**@description 层级名 */
+	name : string,
+	/**@description 层级排序 */
+	sort : number,
+}

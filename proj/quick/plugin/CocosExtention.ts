@@ -370,38 +370,6 @@ window.loadRes = function (config) {
     _loadRes(config);
 }
 
-let _cc = (<any>window)["cc"]
- /**@description 临时的替换方案，效率太底 */
-_cc.updateZIndex = function (node : Node) {
-    if( node.children.length > 1 ){
-        node.children.sort((a,b)=>{
-            return a.zIndex - b.zIndex;
-        });
-        node._updateSiblingIndex();
-    }
-}
- /**@description 临时的替换方案，效率太底 */
-export function updateZIndex( node : Node ){
-    _cc.updateZIndex(node);
-}
-
-Reflect.defineProperty(Node.prototype, "zIndex", {
-    get: function () {
-        let self : any = this;
-        if( typeof self._zIndex =="number"){
-            return self._zIndex;
-        }
-        else{
-            self._zIndex = 0;
-            return self._zIndex;
-        }
-    },
-    set: function (v) {
-        let self: any = this;
-        self._zIndex = v;
-    }
-});
-
 export function CocosExtentionInit() {
     if (!EDITOR) {
         Log.d("Cocos扩展初始化");

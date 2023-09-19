@@ -32,6 +32,7 @@ import { ITips } from "./interface/ITips";
 import GlobalAudio from "./components/GlobalAudio";
 import { Node } from "cc";
 import { EntryImpl } from "./update/EntryImpl";
+import LayerManager from "./core/ui/LayerManager";
 
 /**@description 框架层使用的各管理器单例的管理 */
 export class Framewok implements GameEventInterface{
@@ -43,6 +44,10 @@ export class Framewok implements GameEventInterface{
 
     get Bundles() {
         return this.stageData.bundles;
+    }
+
+    get layerMgr(){
+        return Singleton.get(LayerManager)!;
     }
 
     /**@description 获取Stage数据 */
@@ -287,6 +292,7 @@ export class Framewok implements GameEventInterface{
     init() {
         //初始化自定主entry代理
         this.entryManager.delegate = new EntryImpl();
+
         //引擎扩展初始化
         CocosExtentionInit();
     }
@@ -296,6 +302,10 @@ export class Framewok implements GameEventInterface{
     }
 
     onLoad(node: Node) {
+
+        //初始化层级管理器
+        App.layerMgr.onLoad(node)
+
         //预先加载下loading预置体
         App.uiManager.onLoad(node);
         //Service onLoad

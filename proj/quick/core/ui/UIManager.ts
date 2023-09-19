@@ -126,7 +126,7 @@ export class UIManager implements ISingleton {
             }
             let className = js.getClassName(openOption.type);
 
-            let root = this.viewRoot;
+            let root = App.layerMgr.root;
             if (!root) {
                 if (DEBUG) Log.e(`${this.module}找不到场景的Canvas节点`);
                 reslove(<any>null);
@@ -138,7 +138,6 @@ export class UIManager implements ISingleton {
                 this._viewDatas.set(className, viewData);
                 viewData.status = ViewStatus.WAITTING_NONE;
                 if (!openOption.preload) {
-                    viewData.node.zIndex = openOption.zIndex;
                     if (!viewData.node.parent) {
                         this.addView(viewData.node, openOption.zIndex);
                     }
@@ -155,7 +154,6 @@ export class UIManager implements ISingleton {
                     viewData.status = ViewStatus.WAITTING_NONE;
                     if (!openOption.preload) {
                         if (viewData.view && isValid(viewData.node)) {
-                            viewData.node.zIndex = openOption.zIndex;
                             if (!viewData.node.parent) {
                                 this.addView(viewData.node, openOption.zIndex);
                             }
@@ -323,22 +321,6 @@ export class UIManager implements ISingleton {
 
     private _canvas: Node = null!;
 
-    private _viewRoot: Node = null!;
-    private get viewRoot() {
-        if (!this._viewRoot && !isValid(this._viewRoot)) {
-            this._viewRoot = find("viewRoot", this.canvas) as Node;
-        }
-        return this._viewRoot;
-    }
-
-    private _componentRoot: Node = null!;
-    get componentRoot() {
-        if (!this._componentRoot && !isValid(this._componentRoot)) {
-            this._componentRoot = find("componentRoot", this.canvas) as Node;
-        }
-        return this._componentRoot;
-    }
-
     private _mainController: Component | null = null;
     /*获取当前canvas的组件 */
     public get mainController(): Component | null {
@@ -403,9 +385,7 @@ export class UIManager implements ISingleton {
     }
 
     public addView(node: Node, zOrder: number) {
-        this.viewRoot.addChild(node);
-        node.zIndex = zOrder;
-        (<any>window)["cc"].updateZIndex(this.viewRoot);
+        App.layerMgr.add(node,zOrder);
     }
 
     /**@description 添加动态加载的本地资源 */
@@ -562,68 +542,17 @@ export class UIManager implements ISingleton {
     public addComponent<T extends Component>(type: { new(): T }): T;
     public addComponent(className: string): any;
     public addComponent(data: any) {
-        let root = this.componentRoot;
-        if (root) {
-            let component = root.getComponent(data);
-            if (component) {
-                if (typeof data == "string") {
-                    if (DEBUG) Log.w(`${this.module}已经存在 Component ${component}`)
-                }
-                else {
-                    if (DEBUG) Log.w(`${this.module}已经存在 Component ${js.getClassName(data)}`);
-                }
-                return component;
-            }
-            else {
-                return root.addComponent(data);
-            }
-        }
-        return null;
+        return App.layerMgr.addComponent(data)
     }
 
     public removeComponent(component: string | Component) {
-        let root = this.componentRoot;
-        if (root) {
-            let comp = root.getComponent(component as any);
-            if (comp) {
-                comp.destroy();
-            }
-        }
+        App.layerMgr.removeComponent(component);
     }
 
-    debug(config : {showViews ?: boolean,showChildren ?: boolean,showComp ?: boolean}){
-        if ( !config ){
-            config = {};
-            config.showChildren = true;
-            config.showComp = true;
-            config.showViews = true;
-        }
-        if ( config.showViews ){
-            Log.d(`-----------当前所有视图------------`);
-            this._viewDatas.forEach((value, key) => {
-                Log.d(`[${key}] isLoaded : ${value.isLoaded} status : ${value.status} view : ${js.getClassName(value.view)} active : ${value.view && value.view.node ? value.view.node.active : false}`);
-            });
-        }
-        if ( config.showChildren ){
-            let root = this.viewRoot;
-            if (root) {
-                Log.d(`-----------当前所有节点信息------------`);
-                let children = root.children;
-                for (let i = 0; i < children.length; i++) {
-                    let data = children[i];
-                    Log.d(`${data.name} active : ${data.active}`);
-                }
-            }
-        }
-        if ( config.showComp ){
-            let root: any = this.componentRoot;
-            if (root) {
-                Log.d(`-----------当前所有组件信息------------`);
-                let comps: any[] = root._components;
-                for (let i = 0; i < comps.length; i++) {
-                    Log.d(js.getClassName(comps[i]));
-                }
-            }
-        }
+    debug(){
+        Log.d(`-----------当前所有视图------------`);
+        this._viewDatas.forEach((value, key) => {
+            Log.d(`[${key}] isLoaded : ${value.isLoaded} status : ${value.status} view : ${js.getClassName(value.view)} active : ${value.view && value.view.node ? value.view.node.active : false}`);
+        });
     }
 }

@@ -152,11 +152,11 @@ export class DebugView extends EventComponent {
     }
 
     private onShowUI() {
-        App.uiManager.debug({ showViews: true });
+        App.uiManager.debug();
     }
 
     private onShowNode() {
-        App.uiManager.debug({ showChildren: true });
+        App.layerMgr.debug({ showChildren: true });
     }
 
     private onShowRes() {
@@ -164,7 +164,7 @@ export class DebugView extends EventComponent {
     }
 
     private onShowComp() {
-        App.uiManager.debug({ showComp: true });
+        App.layerMgr.debug({ showComp: true });
     }
 
     private onSender() {
