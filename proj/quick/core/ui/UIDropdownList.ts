@@ -31,7 +31,7 @@ export class UIDropdownList extends Component {
     itemTemplate: Node = null!;
 
     /**@description 裂变项 */
-    protected items: { data: any, node: Node }[] = [];
+    protected items: Node[] = [];
 
     /**@description 当前是否是折叠状态*/
     protected _isFold = true;
@@ -40,7 +40,7 @@ export class UIDropdownList extends Component {
     protected toggleContainer: ToggleContainer = null!;
 
     /**@description 更新裂变项数据 */
-    updateHandler: (isTitle: boolean, node: Node, data: any, index: number) => void = null!;
+    updateHandler: (isTitle: boolean, node: Node, index: number) => void = null!;
 
     /**
      * @description 重新刷新
@@ -54,26 +54,31 @@ export class UIDropdownList extends Component {
         if (!isValid(this.itemTemplate)) {
             DEBUG && Log.e(`请行设置列表项模板`);
         }
-        if (!this.toggleContainer){
+        if (!this.toggleContainer) {
             DEBUG && Log.e(`滚动视图中无toggleContainer`);
             return;
         }
         this.reset();
         datas.forEach((value, index) => {
             let node = instantiate(this.itemTemplate);
-            this.items.push({ data: value, node: node });
+            node.userData = value;
+            this.items.push(node);
             this.view.getComponent(ScrollView)!.content?.addChild(node);
             if (this.updateHandler) {
-                this.updateHandler(false, node, value, index);
+                this.updateHandler(false, node, index);
             }
         })
+        this.title.userData = this.selected?.node.userData;
+        this.updateHandler(true, this.title,0)
     }
 
-    get selected(){
-        if ( this.toggleContainer ){
-            this.toggleContainer.toggleItems.forEach(v=>{
-                
-            })
+    get selected() {
+        if (this.toggleContainer) {
+            for (let i = 0; i < this.toggleContainer.toggleItems.length; i++) {
+                if (this.toggleContainer.toggleItems[i].isChecked) {
+                    return this.toggleContainer.toggleItems[i];
+                }
+            }
         }
         return null;
     }
@@ -96,14 +101,14 @@ export class UIDropdownList extends Component {
             this.title.on(Node.EventType.TOUCH_END, this.onTouchEnd, this);
         }
         //绑定选中事件
-        if ( isValid(this.view) ){
+        if (isValid(this.view)) {
             let scrollView = this.view.getComponent(ScrollView)!;
-            if ( !scrollView ){
+            if (!scrollView) {
                 DEBUG && Log.e(`找不到滚动视图`);
                 return;
             }
             this.toggleContainer = scrollView.content!.getComponent(ToggleContainer)!;
-            if ( !this.toggleContainer ){
+            if (!this.toggleContainer) {
                 DEBUG && Log.e(`滚动视图的.content 找不到 ToggleContainer`);
                 return;
             }
@@ -149,11 +154,11 @@ export class UIDropdownList extends Component {
         if (isValid(this.view)) {
             if (this.view.parent) {
                 tween(this.view).delay(0.05).to(0.1, {
-                    scale: new Vec3(1, 0,1)
+                    scale: new Vec3(1, 0, 1)
                 }).call(() => {
                     this.view.removeFromParent();
                 })
-                .start();
+                    .start();
             }
         }
     }
@@ -187,7 +192,7 @@ export class UIDropdownList extends Component {
             view.active = true;
             view.getComponent(ScrollView)?.scrollToTop();
             tween(this.view).to(0.1, {
-                scale: new Vec3(1, 1,1)
+                scale: new Vec3(1, 1, 1)
             }, {
                 easing: easing.circOut
             }).call(() => {
@@ -204,7 +209,10 @@ export class UIDropdownList extends Component {
         }
     }
 
-    protected onSelected(toggle:Toggle){
+    protected onSelected(toggle: Toggle) {
+        this.fold();
+        this.title.userData = toggle.node.userData;
+        this.updateHandler(true,this.title,0);
     }
 
     protected reset() {
@@ -215,7 +223,7 @@ export class UIDropdownList extends Component {
             this.itemTemplate.removeFromParent();
         }
         if (isValid(this.view)) {
-            this.view.setScale(1,0,1)
+            this.view.setScale(1, 0, 1)
             this.view.removeFromParent();
         }
     }
