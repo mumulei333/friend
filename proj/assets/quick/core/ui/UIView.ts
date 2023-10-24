@@ -19,6 +19,16 @@ export default class UIView extends EventComponent {
         return Macro.UNKNOWN;
     }
 
+    static logicType : ModuleClass<Logic> | null = null;
+    protected logic : Logic | null = null;
+    /**@description 由管理器统一设置，请勿操作 */
+    setLogic(logic : Logic ){
+        this.logic = logic;
+        if ( logic ){
+            logic.onLoad(this);
+        }
+    }
+
     /**@description ViewOption.args参数 */
     private _args?: any[] | any;
     /**@description 通过UI管理器打开时的传入ViewOption.args参数 */
@@ -204,5 +214,25 @@ export default class UIView extends EventComponent {
      * */
     onShow(){
 
+    }
+
+    onDestroy(): void {
+        if ( this.logic ){
+            App.logicManager.destory(this.logic.module);
+        }
+        super.onDestroy();
+    }
+
+    protected update(dt:number){
+        if ( this.logic ){
+            this.logic.update(dt);
+        }
+    }
+
+    /**@description 重置 */
+    protected reset(){
+        if ( this.logic ){
+            this.logic.reset(this);
+        }
     }
 }

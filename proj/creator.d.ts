@@ -4,7 +4,7 @@ The main namespace of Cocos2d-JS, all engine core classes, functions, properties
 !#zh
 Cocos 引擎的主要命名空间，引擎代码中所有的类，函数，属性和常量都在这个命名空间中定义。 */
 /**@description 引擎扩展接口声明开始 */
-declare type UIView = import("./assets/scripts/framework/core/ui/UIView").default;
+declare type UIView = import("./assets/quick/core/ui/UIView").default;
 declare module cc {
 
 	export interface Node {

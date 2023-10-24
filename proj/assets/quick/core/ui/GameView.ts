@@ -12,18 +12,6 @@ const {ccclass, property,menu} = cc._decorator;
 @menu("Quick公共组件/GameView")
 export default class GameView extends UIView {
 
-    static logicType : ModuleClass<Logic> | null = null;
-    protected _logic : Logic | null = null;
-    protected get logic(){
-        return this._logic;
-    }
-    /**@description 由管理器统一设置，请勿操作 */
-    setLogic(logic : Logic ){
-        this._logic = logic;
-        if ( logic ){
-            logic.onLoad(this);
-        }
-    }
     onLoad(){
         super.onLoad();
         //进入场景完成，即onLoad最后一行  必须发进入完成事件
@@ -61,9 +49,6 @@ export default class GameView extends UIView {
             //this.audioHelper.stopMusic();
             this.audioHelper.stopAllEffects();
         }
-        if ( this.logic ){
-            App.logicManager.destory(this.logic.bundle);
-        }
         App.entryManager.onDestroyGameView(this.bundle,this);
         super.onDestroy();
     }
@@ -76,18 +61,5 @@ export default class GameView extends UIView {
         }
         App.entryManager.onCloseGameView(this.bundle,this);
         super.onClose();
-    }
-
-    update(dt:number){
-        if ( this.logic ){
-            this.logic.update(dt);
-        }
-    }
-
-    /**@description 游戏重置 */
-    protected reset(){
-        if ( this.logic ){
-            this.logic.reset(this);
-        }
     }
 }

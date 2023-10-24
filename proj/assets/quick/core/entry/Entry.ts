@@ -144,22 +144,9 @@ export abstract class Entry {
 
 
     /**@description 这个位置说明自己GameView 进入onLoad完成 */
-    onEnterGameView(gameViw: GameView): void {
-        this._gameView = gameViw;
-        let viewType = App.uiManager.getViewType(gameViw);
-        if (viewType) {
-            if (viewType.logicType) {
-                viewType.logicType.module = gameViw.bundle as string;
-                let logic = App.logicManager.get(viewType.logicType, true);
-                if (logic) {
-                    gameViw.setLogic(logic);
-                }
-            } else {
-                if (CC_DEBUG) {
-                    Log.w(`${cc.js.getClassName(viewType)}未指定logictype`);
-                }
-            }
-        }
+    onEnterGameView(gameView: GameView): void {
+        this._gameView = gameView;
+        App.logicManager.get(gameView,true);
     }
 
     /**

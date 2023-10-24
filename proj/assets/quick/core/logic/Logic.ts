@@ -2,29 +2,25 @@ import { EventProcessor } from "../event/EventProcessor";
 import { Macro } from "../../defines/Macros";
 
 export class Logic extends EventProcessor {
-    /**@description 所属模块,管理器设置，GameView中的bundle的值 */
+    /**@description 所属模块,管理器设置 */
     static module = Macro.UNKNOWN;
-    /**@description 所属模块,管理器设置，GameView中的bundle的值 */
+    /**@description 所属模块,管理器设置 */
     module = Macro.UNKNOWN;
-    /**@description 当前逻辑管理器bundle */
-    get bundle() {
-        return this.module;
-    }
 
-    protected gameView: GameView = null!;
+    protected _view: UIView = null!;
 
     get view(){
-        return this.gameView;
+        return this._view;
     }
 
     /**@description 重置游戏逻辑 */
-    reset(gameView: GameView) {
+    reset(view: UIView) {
 
     }
 
-    onLoad(gameView: GameView): void {
-        this.gameView = gameView;
-        super.onLoad(gameView);
+    onLoad(view: UIView): void {
+        this._view = view;
+        super.onLoad(view);
     }
     update(dt: number): void { }
 

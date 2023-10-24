@@ -130,6 +130,9 @@ declare interface UIClass<T extends UIView> {
 	 * } 
 	 */
 	getPrefabUrl(): string;
+
+	/**@description 界面逻辑处理器 */
+	logicType: ModuleClass<Logic>;
 }
 
 /**
@@ -170,10 +173,6 @@ declare interface EntryClass<T> {
 declare type Entry = import("../assets/quick/core/entry/Entry").Entry;
 declare type Logic = import("../assets/quick/core/logic/Logic").Logic;
 declare type GameView = import("../assets/quick/core/ui/GameView").default;
-declare interface GameViewClass<T extends UIView> {
-	new(): T;
-	logicType: ModuleClass<Logic>;
-}
 
 declare type Sender = import("../assets/quick/core/net/service/Sender").Sender;
 declare type Handler = import("../assets/quick/core/net/service/Handler").Handler;

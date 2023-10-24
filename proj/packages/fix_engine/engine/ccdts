@@ -1,6 +1,6 @@
 
 /**@description 引擎扩展接口声明开始 */
-declare type UIView = import("./assets/scripts/framework/core/ui/UIView").default;
+declare type UIView = import("./assets/quick/core/ui/UIView").default;
 declare module cc {
 
 	export interface Node {
