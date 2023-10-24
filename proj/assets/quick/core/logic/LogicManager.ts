@@ -23,10 +23,7 @@ export class LogicManager extends SingletonT<Logic> implements ISingleton {
                 if( viewType.logicType ){
                     viewType.logicType.module = view.bundle as string;
                     let logic =  super.get(viewType.logicType,isCreate);
-                    if ( logic ){
-                        view.setLogic(logic);
-                        return logic as any;
-                    }
+                    return logic as any;
                 }else{
                     CC_DEBUG && Log.w(`${cc.js.getClassName(viewType)}未指定logictype`);
                 }

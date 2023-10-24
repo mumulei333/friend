@@ -146,7 +146,6 @@ export abstract class Entry {
     /**@description 这个位置说明自己GameView 进入onLoad完成 */
     onEnterGameView(gameView: GameView): void {
         this._gameView = gameView;
-        App.logicManager.get(gameView,true);
     }
 
     /**
