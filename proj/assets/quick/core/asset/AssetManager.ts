@@ -23,7 +23,7 @@ class RemoteLoader {
                     return
                 }
                 //如果存在缓存 ，直接取出
-                spCache = App.cache.remoteCaches.getSpriteFrame(key);
+                spCache = App.cache.remoteCaches.getSpriteFrame(url);
                 if (spCache) {
                     if (CC_DEBUG) Log.d(this._logTag, `从缓存精灵帧中获取:${key}`);
                     resolve([spCache, <cc.SpriteFrame>(spCache.data)]);
