@@ -192,7 +192,7 @@ export default class AudioComponent extends EventComponent {
                         } else {
                             App.uiManager.garbage.addLocal(cache);
                         }
-                        if (!(this.isPlaying && this.curMusicUrl == this.prevMusiUrl)) {
+                        if ( !(this.isPlaying && this.curMusicUrl == this.prevMusiUrl) || (this.isPlaying && loop == false) ) {
                             //停掉当前播放音乐
                             this.stopMusic();
                             //播放新的背景音乐
