@@ -1,6 +1,6 @@
 import { sys, TextAsset } from "cc";
 import { DEBUG } from "cc/env";
-import { Net } from "../Net";
+import { Proto } from "../Net";
 export class ProtoManager implements ISingleton{
     
     /**@description 记录已经加载过的目录，加载过的proto将不会重新加载 */
@@ -70,7 +70,7 @@ export class ProtoManager implements ISingleton{
         return null;
     }
 
-    decode<ProtoType>(config: Net.Proto.decodeConfig): ProtoType | null {
+    decode<ProtoType>(config: Proto.decodeConfig): ProtoType | null {
         let protoType = this.lookup(config.className) as protobuf.Type;
         if (protoType) {
             return protoType.decode(config.buffer) as any;
