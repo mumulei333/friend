@@ -8,6 +8,8 @@
 
     export type BUNDLE_TYPE = string | AssetManager.Bundle;
 
+	export type UIView = import("db://assets/../quick/core/ui/UIView").default;
+
 	export interface Sprite {
 		/**
 		 * @description 从网络加载图片

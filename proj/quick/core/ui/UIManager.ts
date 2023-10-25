@@ -27,7 +27,7 @@ export class UIManager implements ISingleton {
      * @param view 
      * @returns 
      */
-    public getViewType<T extends UIView>(view: UIView): GameViewClass<T> {
+    public getViewType<T extends UIView>(view: UIView): UIClass<T> {
         if (!isValid(view)) {
             return null as any;
         }

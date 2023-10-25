@@ -20,6 +20,10 @@ export default class UIView extends EventComponent {
         return Macro.UNKNOWN;
     }
 
+    static logicType : ModuleClass<Logic> = null!;
+    /**@description 外部禁止调用，外部只能通过注入方法注入 */
+    private _logic : Logic | null = null;
+
     /**@description ViewOption.args参数 */
     private _args?: any[] | any;
     /**@description 通过UI管理器打开时的传入ViewOption.args参数 */
@@ -150,6 +154,12 @@ export default class UIView extends EventComponent {
     onLoad() {
         this.audioHelper = <AudioComponent>(this.addComponent(AudioComponent));
         this.audioHelper.owner = this;
+        let logic = App.logicManager.get(this,true);
+        if ( logic ){
+            //这里保证逻辑管理器只初始化一次就够了
+            logic.onLoad(this);
+        }
+        this._logic = logic;
         super.onLoad();
     }
 
@@ -205,5 +215,25 @@ export default class UIView extends EventComponent {
      * */
     onShow(){
 
+    }
+
+    onDestroy(): void {
+        if ( this._logic ){
+            App.logicManager.destory(this._logic.module);
+        }
+        super.onDestroy();
+    }
+
+    protected update(dt:number){
+        if ( this._logic ){
+            this._logic.update(dt);
+        }
+    }
+
+    /**@description 重置 */
+    protected reset(){
+        if ( this._logic ){
+            this._logic.reset(this);
+        }
     }
 }
