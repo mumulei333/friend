@@ -32,4 +32,21 @@ export class Logic extends EventProcessor {
     debug(){
         Log.d(`${this.module} : ${js.getClassName(this)}`);
     }
+
+    /**
+     * @description 进入指定Bundle
+     * @param bundle Bundle名
+     * @param userData 用户自定义数据
+     */
+    enterBundle( bundle : BUNDLE_TYPE , userData ?: any){
+        App.entryManager.enterBundle(bundle , userData);
+    }
+
+    /**
+     * @description 返回上一场景
+     * @param userData 用户自定义数据
+     */
+    backBundle(userData?:any){
+        App.entryManager.backBundle(userData);
+    }
 }
