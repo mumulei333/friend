@@ -2,6 +2,7 @@ import { DEBUG } from "cc/env";
 import { SingletonT } from "../../utils/SingletonT";
 import { Logic } from "./Logic";
 import { js } from "cc";
+import UIView from "../ui/UIView";
 
 export class LogicManager extends SingletonT<Logic> implements ISingleton {
     static module: string = "【逻辑管理器】";
@@ -16,9 +17,9 @@ export class LogicManager extends SingletonT<Logic> implements ISingleton {
         if ( isCreate == undefined ){
             isCreate = false;
         }
-        if ( typeof param == "string" || param instanceof Logic){
+        if ( typeof param == "string"){
             return super.get(param as any,isCreate);
-        }else{
+        } else if ( param instanceof UIView ){
             let view = param as any;
             let viewType = App.uiManager.getViewType(view)
             if( viewType ){
@@ -33,6 +34,8 @@ export class LogicManager extends SingletonT<Logic> implements ISingleton {
                 DEBUG && Log.w(`无法找到UIView的类型!`);
             }
             return null;
+        } else{
+            return super.get(param as any,isCreate);
         }
     }
 }

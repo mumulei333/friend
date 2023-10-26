@@ -67,6 +67,38 @@ export class SingletonT<TYPE extends ISingleton> {
     }
 
     /**
+     * @description 销毁
+     * @param exclude 需要排除的项,如无参数传入，直接销毁所有
+     */
+    destoryExclude<T extends TYPE>(exclude?: (SingletonClass<T> | string)[]) {
+        if (exclude) {
+            //需要排除指定数据类型
+            this._datas.forEach((v, key) => {
+                if (!this.isInExclude(v, exclude)) {
+                    if (v.isResident) {
+                        Log.d(`${v.module}为常驻单列，不做销毁处理`);
+                    } else {
+                        Log.d(`${v.module}销毁`);
+                        v.destory && v.destory();
+                        this._datas.delete(v.module);
+                    }
+                }
+            });
+        } else {
+            this._datas.forEach(v => {
+                if (v.isResident) {
+                    Log.d(`${v.module}为常驻单列，不做销毁处理`);
+                } else {
+                    Log.d(`${v.module}销毁`);
+                    v.destory && v.destory();
+                    this._datas.delete(v.module);
+                }
+            })
+            return true;
+        }
+    }
+
+    /**
      * @description 清空数据
      * @param exclude 排除项
      */
