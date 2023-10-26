@@ -23,6 +23,13 @@ export class Singleton extends SingletonT<ISingleton> implements ISingleton {
         return this.instance.destory(typeOrkey);
     }
     /**
+     * @description 销毁
+     * @param exclude 需要排除的项,如无参数传入，直接销毁所有
+     */
+    public static destoryExclude<T extends ISingleton>(exclude?: (SingletonClass<T> | string)[]){
+        return this.instance.destoryExclude(exclude);
+    }
+    /**
      * @description 清空数据
      * @param exclude 排除项
      */
