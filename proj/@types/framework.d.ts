@@ -334,6 +334,13 @@ declare type TableView = import("../assets/quick/core/ui/TableView").default;
 
 declare let App: import("../assets/Application").Application;
 
+/**@description 等待注入到App中的数据 */
+declare interface WaitToAppData{
+	entrys : {[key : string ] : { target : any , type : UIClass<any> }};
+}
+
+declare let WaitToApp : WaitToAppData;
+
 /**@description 注入类型 */
 type InjectType = "logic" | "data" | "singleton" | "service" | "sender" | "handler";
 interface InjectParam<T> {

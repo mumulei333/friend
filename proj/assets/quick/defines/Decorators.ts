@@ -18,6 +18,13 @@ interface FindOption<T> {
     root?: string;
 }
 
+function initWaitToApp(){
+    if ( typeof WaitToApp == "undefined" ){
+        WaitToApp = {} as any;
+        (<any>window)["WaitToApp"] = WaitToApp;
+    }
+}
+
 /**
  * @description bundle入口程序注册
  * @param className 入口类名
@@ -27,9 +34,20 @@ interface FindOption<T> {
  */
 export function registerEntry(className: string, bundle: string, type: typeof GameView) {
     return function (target: any) {
-        target["__classname__"] = className;
-        target.bundle = bundle;
-        App.entryManager.register(target, type)
+        if ( typeof App == "object" ){
+            target["__classname__"] = className;
+            target.bundle = bundle;
+            App.entryManager.register(target, type)
+        }else{
+            initWaitToApp();
+            if ( !WaitToApp.entrys ){
+                WaitToApp.entrys = {};
+            }
+            let name = `${className}|${bundle}`;
+            if ( !WaitToApp.entrys[name] ){
+                WaitToApp.entrys[name] = { target , type};
+            }
+        }
     }
 }
 
