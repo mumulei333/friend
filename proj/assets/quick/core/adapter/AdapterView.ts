@@ -51,6 +51,7 @@ export default class AdapterView extends Adapter {
                         break;
                 }
             }
+            this.doOnAdapterComplete();
         }
     }
 }

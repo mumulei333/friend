@@ -216,6 +216,7 @@ export default class AdapterSafeArea extends Adapter {
             }
             widget.updateAlignment();
             this._isDirty = false;
+            this.doOnAdapterComplete();
         }
     }
 

@@ -88,6 +88,15 @@ export class Adapter extends cc.Component {
 
     protected _func: any = null;
 
+    /**@description 适配完成回调 */
+    onAdapterComplete : ()=>void = null!;
+
+    protected doOnAdapterComplete(){
+        if ( this.onAdapterComplete ){
+            this.onAdapterComplete();
+        }
+    }
+
     onLoad() {
         super.onLoad && super.onLoad();
         this.onChangeSize();
@@ -129,7 +138,7 @@ export class Adapter extends cc.Component {
      * @description 视图发生大小变化
      */
     protected onChangeSize() {
-
+        this.doOnAdapterComplete();
     }
 
     /**@description 获取当前设备方向 */
