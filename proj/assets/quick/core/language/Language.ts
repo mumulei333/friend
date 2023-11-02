@@ -10,7 +10,7 @@ export class Language implements ISingleton {
     /**@description 支持多语言切换组件 */
     private _components: Language.LanguageComponent[] = [];
     /**@description 总语言包数据 */
-    private _data: Language.Data = { language: Macro.UNKNOWN};
+    private _data: Language.Data = <any>{ language: Macro.UNKNOWN};
     /**@description 语言包数据代理 */
     private delegates: Map<string, LanguageDelegate> = new Map();
 
