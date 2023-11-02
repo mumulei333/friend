@@ -281,13 +281,13 @@ declare namespace Language {
 	export interface Data {
 		language: string;
 		[key:string] : Object;
-		data: Object;
+		data: any;
 	}
 
 	/**@description Quick 框架内使用的语言包 */
 	export interface ResourceData extends Data {
 		data: {
-			[key: string]: Object;
+			[key: string]: any;
 			/**@description 程序写入 */
 			bundles: { [key: string]: string };
 			/**@description 保存图片失败 */
