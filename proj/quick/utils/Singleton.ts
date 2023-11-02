@@ -34,7 +34,7 @@ export class Singleton extends SingletonT<ISingleton> implements ISingleton {
      * @param exclude 排除项
      */
     public static clear<T extends ISingleton>(exclude?: (SingletonClass<T> | string)[]) {
-        this.instance.clear();
+        this.instance.clear(exclude);
     }
 
     public static debug(){
