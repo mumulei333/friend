@@ -281,45 +281,49 @@ interface IService {
 declare namespace Language {
 	export interface Data {
 		language: string;
-		[key:string] : Object;
+		[key: string]: Object;
+		data: Object;
 	}
 
 	/**@description Quick 框架内使用的语言包 */
-	export interface ResourceData extends Data{
-		/**@description 程序写入 */
-		bundles: {[key:string]:string};
-		/**@description 保存图片失败 */
-        capture_save_failed:string;
-		/**@description 截图成功*/
-        capture_success: string;
-		/**@description 截图失败 */
-        capture_failed: string;
-		/**@description 成功保存到设备相册 */
-        capture_save_photo_album: string;
-		/**@description 成功保存在设备目录并加载成功: {0} */
-        capture_save_local_success1: string;
-		/**@description 成功保存在设备目录: {0}*/
-        capture_save_local_success2: string;
-		/**@description {0}网络已断开，是否重新连接？ */
-        warningReconnect: string;
-		/**@description {0}网络:正在尝试第{1}次连接... */
-        tryReconnect: string;
-		/**@description 更新{0}失败*/
-        updateFaild: string;
-		/**@description 检测更新中...*/
-        checkingUpdate: string;
-		/**@description 版本过低，请更新 */
-        mainPackVersionIsTooLow: string;
-		/**@description {0}已升级到最新 */
-        alreadyRemoteVersion: string;
-		/**@description {0}加载失败!!! */
-        loadFailed: string;
-		/**@description {0}更新完成，需要重启游戏 */
-        restartApp : string;
-		/**@description 下载文件失败，请重试!!! */
-        downloadFailed: string;
-		/**@description 正在加载... */
-        loading: string;
+	export interface ResourceData extends Data {
+		data: {
+			[key: string]: Object;
+			/**@description 程序写入 */
+			bundles: { [key: string]: string };
+			/**@description 保存图片失败 */
+			capture_save_failed: string;
+			/**@description 截图成功*/
+			capture_success: string;
+			/**@description 截图失败 */
+			capture_failed: string;
+			/**@description 成功保存到设备相册 */
+			capture_save_photo_album: string;
+			/**@description 成功保存在设备目录并加载成功: {0} */
+			capture_save_local_success1: string;
+			/**@description 成功保存在设备目录: {0}*/
+			capture_save_local_success2: string;
+			/**@description {0}网络已断开，是否重新连接？ */
+			warningReconnect: string;
+			/**@description {0}网络:正在尝试第{1}次连接... */
+			tryReconnect: string;
+			/**@description 更新{0}失败*/
+			updateFaild: string;
+			/**@description 检测更新中...*/
+			checkingUpdate: string;
+			/**@description 版本过低，请更新 */
+			mainPackVersionIsTooLow: string;
+			/**@description {0}已升级到最新 */
+			alreadyRemoteVersion: string;
+			/**@description {0}加载失败!!! */
+			loadFailed: string;
+			/**@description {0}更新完成，需要重启游戏 */
+			restartApp: string;
+			/**@description 下载文件失败，请重试!!! */
+			downloadFailed: string;
+			/**@description 正在加载... */
+			loading: string;
+		}
 	}
 
 	export interface LanguageComponent {
@@ -374,11 +378,11 @@ declare type TableView = import("../quick/core/ui/TableView").default;
 declare let App: import("../assets/Application").Application;
 
 /**@description 等待注入到App中的数据 */
-declare interface WaitToAppData{
-	entrys : {[key : string ] : { target : any , type : UIClass<any> }};
+declare interface WaitToAppData {
+	entrys: { [key: string]: { target: any, type: UIClass<any> } };
 }
 
-declare let WaitToApp : WaitToAppData;
+declare let WaitToApp: WaitToAppData;
 
 /**@description 注入类型 */
 type InjectType = "logic" | "data" | "singleton" | "service" | "sender" | "handler";
@@ -388,26 +392,26 @@ interface InjectParam<T> {
 }
 
 /**@description bundle 数据 */
-interface BundleData{
+interface BundleData {
 	/**@description bundle 展示名，该字段会合并到语言包内 */
-	name: { 
+	name: {
 		/**@description 中文 */
-		CN: string, 
+		CN: string,
 		/**@description 英文 */
-		EN: string 
+		EN: string
 	};
 	/**@description bundle 名 */
-    bundle: string;
+	bundle: string;
 	/**@description 类型，相当于枚举值，定义后，不能改变数值，否则会影响到语言包的获取 */
-    type: number;
+	type: number;
 	/**@description 排序 */
-	sort : number;
+	sort: number;
 }
 
 /**@description 层级 配置 */
-interface LayerConfig{
+interface LayerConfig {
 	/**@description 层级名 */
-	name : string,
+	name: string,
 	/**@description 层级排序 */
-	sort : number,
+	sort: number,
 }
