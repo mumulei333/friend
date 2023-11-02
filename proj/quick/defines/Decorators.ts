@@ -53,6 +53,20 @@ export function registerEntry(className: string, bundle: string, type: typeof Ga
     }
 }
 
+/**@description 待注册信息重新注入到App中 */
+export function toApp(){
+    if (typeof WaitToApp == "object") {
+        if (typeof WaitToApp.entrys == "object") {
+            Object.keys(WaitToApp.entrys).forEach(v => {
+                let [className, bundle] = v.split("|");
+                let { target , type } = WaitToApp.entrys[v];
+                target["__classname__"] = className;
+                target.bundle = bundle;
+                App.entryManager.register(target, type as any)
+            })
+        }
+    }
+}
 
 function __find<T>(path: string, node: Node, type: FIND_TYPE<T>) {
     let temp = find(path, node);
