@@ -158,6 +158,7 @@ export default class AdapterSprite extends Adapter {
                 this.node.setPosition(v3(0, -0.5 * (trans.height - this.height * this.node.scale.x)));
                 break;
         }
+        this.doOnAdapterComplete();
     }
 
     private get parentTrans(){

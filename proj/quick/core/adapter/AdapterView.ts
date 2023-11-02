@@ -1,7 +1,7 @@
 /**
  */
 
-import { v3, _decorator } from "cc";
+import { v3, _decorator, UITransform } from "cc";
 import { EDITOR } from "cc/env";
 import { Adapter } from "./Adapter";
 
@@ -53,6 +53,7 @@ export default class AdapterView extends Adapter {
                         break;
                 }
             }
+            this.doOnAdapterComplete();
         }
     }
 }
