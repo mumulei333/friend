@@ -13,6 +13,8 @@ export class Language implements ISingleton {
     private _data: Language.Data = <any>{ language: Macro.UNKNOWN };
     /**@description 语言包数据代理 */
     private delegates: Map<string, LanguageDelegate> = new Map();
+    /**@description 设置默认语言包 */
+    defaultLanguage = sys.Language.CHINESE;
 
     public addDelegate(delegate: LanguageDelegate | null) {
         if (!delegate) return;
@@ -123,7 +125,7 @@ export class Language implements ISingleton {
 
     /**@description 获取语言包名 */
     public getLanguage() {
-        return App.storage.getItem(LANG_KEY, sys.Language.CHINESE);
+        return App.storage.getItem(LANG_KEY,this.defaultLanguage);
     }
 
     /**
